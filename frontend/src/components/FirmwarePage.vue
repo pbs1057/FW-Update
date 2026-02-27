@@ -3,21 +3,18 @@
     <n-space vertical :size="12">
       <n-space justify="space-between" style="width: 100%;">
         <n-space>
-          <n-tag>Use</n-tag>
+          <n-tag ghost :color="{color: 'rgba(107, 142, 158, 0.3)',textColor: 'white', borderColor: 'white' }">Use</n-tag>
           <n-tag type="error">NoUse</n-tag>
           <n-tag type="info">Test</n-tag>
           <n-tag ghost
             :color="{ color: 'rgba(147, 142, 158, 0.3)', textColor: 'rgb(255,231,242)', borderColor: 'rgb(255,231,242)' }">NoUse
             & Test</n-tag>
           <n-tag type="success">Pin</n-tag>
-
         </n-space>
         <n-space>
           <n-button @click="openUploadModal" type="info" ghost>Upload Firmware</n-button>
           <n-button @click="openModifyModal" type="info" ghost>Modify Firmware</n-button>
         </n-space>
-
-
       </n-space>
 
       <n-data-table ref="dataTableInst" :columns="columns" :data="data" 
@@ -32,234 +29,18 @@
         :model-options="modelOptions" @bulk-update="handleBulkUpdate" @bulk-delete="handleBulkDelete" />
 
       <!-- 상세 정보 모달 -->
-
-      <n-modal v-model:show="showModal" preset="card" style="width: 600px;">
-        <template #header>
-          <n-gradient-text type="info">
-            Modify Firmware Info (ID : {{ selectedRow?.id }})
-          </n-gradient-text>
-        </template>
-        <n-space vertical v-if="selectedRow" :size="12">
-          <n-form>
-            <n-grid :cols="2" :x-gap="12" :y-gap="8">
-              <!-- Row 1 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Version</n-tag>
-                  <n-input v-model:value="selectedRow.version" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Priority</n-tag>
-                  <n-select v-model:value="selectedRow.priority" :options="priorityOptions" />
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 2 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Revision</n-tag>
-                  <n-input v-model:value="selectedRow.revision" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">PlatformKey</n-tag>
-                  <n-input v-model:value="selectedRow.platformKey" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 3 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Size
-                    (Byte)</n-tag>
-                  <n-input v-model:value="selectedRow.size" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Encrypt
-                    Level</n-tag>
-                  <n-select v-model:value="selectedRow.encryptLevel" :options="encryptLevelOptions" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 4 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">SystemID</n-tag>
-                  <n-input v-model:value="selectedRow.systemId" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info" style="height: 34px; width: 100px; display: flex;  justify-content: center;">Need
-                    FacRst</n-tag>
-                  <div style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <n-switch v-model:value="selectedRow.needFacRst" :round="false" :rail-style="switchRailStyle" />
-                  </div>
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 5 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Md5</n-tag>
-
-                  <n-input v-model:value="selectedRow.md5" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 100px; display: flex; align-items: center; justify-content: center;">Use</n-tag>
-                  <div style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <n-switch v-model:value="selectedRow.use" :rail-style="switchRailStyle" :round="false" />
-                  </div>
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 6 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Model</n-tag>
-                  <n-select v-model:value="selectedRow.model" :options="modelOptions" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 100px; display: flex; align-items: center; justify-content: center;">Test</n-tag>
-                  <div style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <n-switch v-model:value="selectedRow.test" :rail-style="switchRailStyle" :round="false" />
-                  </div>
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 7 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Buyer</n-tag>
-                  <n-select v-model:value="selectedRow.buyer" :options="buyerOptions" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 100px; display: flex; align-items: center; justify-content: center;">OnlyApp</n-tag>
-                  <div style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <n-switch v-model:value="selectedRow.onlyApp" :rail-style="switchRailStyle" :round="false" />
-                  </div>
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 8 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Type</n-tag>
-                  <n-select v-model:value="selectedRow.type" :options="typeOptions" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 100px; display: flex; align-items: center; justify-content: center;">Pin
-                    Use</n-tag>
-                  <div style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <n-switch v-model:value="selectedRow.pinUse" :rail-style="switchRailStyle" :round="false" />
-                  </div>
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 9 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Mode</n-tag>
-                  <n-select v-model:value="selectedRow.mode" :options="modeOptions" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Pin
-                    Code</n-tag>
-                  <n-input v-model:value="selectedRow.pinCode" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 10 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">RegDate</n-tag>
-                  <n-input v-model:value="selectedRow.regDate" disabled />
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Pin
-                    Max</n-tag>
-                  <n-input-number v-model:value="selectedRow.pinMax" style="width: 100%;" />
-                </n-input-group>
-              </n-gi>
-
-              <!-- Row 11 -->
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 100px; display: flex; align-items: center; justify-content: center;">Down
-                    Link</n-tag>
-                  <div style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <n-button text tag="a" type="info" style="width: 100%;">IRD DOWN</n-button>
-                  </div>
-                </n-input-group>
-              </n-gi>
-
-              <n-gi>
-                <n-input-group>
-                  <n-tag type="info"
-                    style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Pin
-                    Count</n-tag>
-                  <n-input-number v-model:value="selectedRow.pinCount" style="width: 100%;" :disabled="true" />
-                </n-input-group>
-              </n-gi>
-            </n-grid>
-          </n-form>
-        </n-space>
-
-        <template #footer>
-          <n-space justify="end">
-            <n-button @click="saveChanges" type="info" ghost>Modify</n-button>
-            <n-button @click="deleteFirmware" type="error" ghost>Delete</n-button>
-            <n-button @click="showModal = false">Cancel</n-button>
-          </n-space>
-        </template>
-      </n-modal>
+      <FirmwareDetailModal  
+        v-model:show="showModal"
+        v-model:selected-row="selectedRow"
+        :priority-options="priorityOptions"
+        :model-options="modelOptions"
+        :buyer-options="buyerOptions"
+        :encrypt-level-options="encryptLevelOptions"
+        :type-options="typeOptions"
+        :mode-options="modeOptions"
+        @save="saveChanges"
+        @delete="deleteFirmware"
+      />
     </n-space>
   </div>
 </template>
@@ -267,12 +48,13 @@
 <script setup lang="ts">
 import type { DataTableColumns, DataTableInst } from 'naive-ui'
 import { ref, computed, onMounted, nextTick } from 'vue'
-import { NButton, NModal, NSpace, NForm, NInput, NInputNumber, NInputGroup, NSelect, NSwitch, NTag, NGrid, NGi, NGradientText } from 'naive-ui'
+import { NButton, NSpace } from 'naive-ui'
 import { useFirmwareStore } from '../stores/useFirmwareStore'
 import { useFirmwareMetaStore } from '../stores/useFirmwareMetaStore'
 import type { Firmware } from '../type/type'
 import BulkModifyModal from './modals/BulkModifyModal.vue'
 import UploadFirmwareModal from './modals/UploadFirmwareModal.vue'
+import FirmwareDetailModal from './modals/FirmwareDetailModal.vue'
 import Sortable from 'sortablejs'
 
 const firmwareStore = useFirmwareStore()
@@ -280,12 +62,6 @@ const metaStore = useFirmwareMetaStore()
 
 const showModal = ref(false)
 const selectedRow = ref<Firmware | null>(null)
-
-// Switch rail style function
-const switchRailStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => ({
-  background: checked ? '#2080f0' : '#d0d0d0',
-  boxShadow: focused ? '0 0 0 2px rgba(32, 128, 240, 0.3)' : 'none'
-})
 
 // 벌크 수정 모달
 const showBulkModal = ref(false)
@@ -385,19 +161,15 @@ const revisionOptions = computed(() =>
 )
 
 
-const saveChanges = () => {
-  if (selectedRow.value) {
-    firmwareStore.updateFirmware(selectedRow.value.id, selectedRow.value)
-    console.log('저장된 데이터:', selectedRow.value)
-    showModal.value = false
-  }
+const saveChanges = (firmware: Firmware) => {
+  firmwareStore.updateFirmware(firmware.id, firmware)
+  console.log('저장된 데이터:', firmware)
+  showModal.value = false
 }
 
-const deleteFirmware = () => {
-  if (selectedRow.value && confirm(`ID ${selectedRow.value.id} 펌웨어를 삭제하시겠습니까?`)) {
-    firmwareStore.deleteFirmware(selectedRow.value.id)
-    showModal.value = false
-  }
+const deleteFirmware = (id: string) => {
+  firmwareStore.deleteFirmware(id)
+  showModal.value = false
 }
 
 //ID	Version	Revision	Size	Model	Buyer	Type	Priority	Download
@@ -538,6 +310,7 @@ onMounted(() => {
 :deep(.n-data-table-wrapper) {
   background-color: transparent !important;
 }
+
 
 /* Pin use - 초록색 */
 :deep(.row-pin td) {

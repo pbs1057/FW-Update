@@ -20,10 +20,10 @@ const handleMenuChange = (page) => {
 </script>
 
 <template>
-  <div class="flex flex-col h-screen bg-gray-700 font-poppins">
+  <div class="flex flex-col h-screen bg-gray-900 font-poppins ">
     <!-- 상단 헤더 -->
-    <div class="px-10 pt-6 flex items-center">
-      <h1 class="text-2xl font-bold text-white">Test FW Update</h1>
+    <div class="px-20 pt-6 pb-4 flex items-center border border-gray-600">
+      <h1 class="text-2xl font-bold text-white">FW Update</h1>
       <nav class="flex items-center space-x-2 text-sm text-gray-300 px-20">
         <span class="hover:text-white cursor-pointer">Home</span>
         <span>/</span>
@@ -34,8 +34,8 @@ const handleMenuChange = (page) => {
     <!-- 메인 레이아웃 -->
     <div class="flex flex-1 overflow-hidden">
       <!-- Sidebar (왼쪽) -->
-      <div class="w-64 flex-shrink-0 p-6">
-        <Sidebar class="rounded-lg overflow-hidden shadow-lg h-full" @menu-change="handleMenuChange" />
+      <div class="w-64 flex-shrink-0 ">
+        <Sidebar class="overflow-hidden  h-full" @menu-change="handleMenuChange" />
       </div>
 
       <!-- Main Content Area (오른쪽) -->

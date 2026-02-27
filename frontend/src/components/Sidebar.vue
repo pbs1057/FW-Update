@@ -3,131 +3,87 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['menu-change'])
 
-const menuItems = ref([
-  { 
-    name: 'Firmware', 
-    page: 'firmware', 
-  
-  },
-  { 
-    name: 'VerRev', 
-    page: 'verrev', 
-    active: false
-  },
-  { 
-    name: 'VerRevCnt', 
-    page: 'verrevcnt', 
-    active: false
-  },
-  { 
-    name: 'Buyer', 
-    page: 'buyer', 
-    active: false
-  },
-  { 
-    name: 'Model', 
-    page: 'model',  
-    active: false
-  },
-  { 
-    name: 'Release Type', 
-    page: 'releasetype', 
-    active: false
-  },
-  { 
-    name: 'Build Mode', 
-    page: 'buildmode', 
-    active: false
-  },
-  { 
-    name: 'Priority', 
-    page: 'priority', 
-    active: false
-  },
-  { 
-    name: 'Platform Key', 
-    page: 'platformkey', 
-    active: false
-  },
-  { 
-    name: 'EncryptLv', 
-    page: 'encryptlv', 
-    active: false
-  }
-])
+const activeKey = ref('firmware')
+const collapsed = ref(false)
 
-const selectMenu = (index) => {
-  const item = menuItems.value[index]
-  
-  if (item.hasSubmenu) {
-    item.expanded = !item.expanded
-  } else {
-    menuItems.value.forEach((item, i) => {
-      item.active = i === index
-      if (item.hasSubmenu) {
-        item.expanded = false
-      }
-    })
-    emit('menu-change', item.page)
+const menuOptions = [
+  {
+    label: 'Firmware',
+    key: 'firmware'
+  },
+  {
+    label: 'VerRev',
+    key: 'verrev'
+  },
+  {
+    label: 'VerRevCnt',
+    key: 'verrevcnt'
+  },
+  {
+    label: 'Buyer',
+    key: 'buyer'
+  },
+  {
+    label: 'Model',
+    key: 'model'
+  },
+  {
+    label: 'Release Type',
+    key: 'releasetype'
+  },
+  {
+    label: 'Build Mode',
+    key: 'buildmode'
+  },
+  {
+    label: 'Priority',
+    key: 'priority'
+  },
+  {
+    label: 'Platform Key',
+    key: 'platformkey'
+  },
+  {
+    label: 'EncryptLv',
+    key: 'encryptlv'
   }
-}
+]
 
-const selectSubmenu = (parentIndex, submenuPage) => {
-  menuItems.value.forEach((item, i) => {
-    item.active = i === parentIndex
-  })
-  emit('menu-change', submenuPage)
+const handleMenuSelect = (key) => {
+  activeKey.value = key
+  emit('menu-change', key)
 }
 </script>
 
 <template>
-  <div class="w-56 bg-gray-300 from-emerald-500 to-emerald-700 text-gray-700 flex flex-col">
-
-    <!-- Menu Items -->
-    <nav class="flex-1 px-4 py-6">
-      <ul class="space-y-2">
-        <li v-for="(item, index) in menuItems" :key="index">
-          <a 
-            @click="selectMenu(index)"
-            href="#"
-            :class="[
-              'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
-              item.active 
-                ? 'bg-gray-400 shadow-lg' 
-                : 'hover:bg-gray-400/20'
-            ]"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path :d="item.icon" />
-            </svg>
-            <span class="text-xs font-medium tracking-wide flex-1">{{ item.name }}</span>
-            <svg v-if="item.hasSubmenu" 
-                 class="w-4 h-4 transition-transform duration-200" 
-                 :class="{ 'rotate-180': item.expanded }"
-                 fill="currentColor" 
-                 viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-          </a>
-          
-          <!-- Submenu -->
-          <ul v-if="item.hasSubmenu && item.expanded" class="mt-2 ml-4 space-y-1">
-            <li v-for="(subitem, subindex) in item.submenu" :key="subindex">
-              <a 
-                @click.stop="selectSubmenu(index, subitem.page)"
-                href="#"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs hover:bg-gray-400/30 transition-all duration-200"
-              >
-                <span class="w-2 h-2 rounded-full bg-gray-500"></span>
-                <span>{{ subitem.name }}</span>
-              </a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-  </div>
+  <div class="bg-gray-900 border-r border-gray-600">
+    <n-menu 
+      :value="activeKey"
+      :options="menuOptions"
+      @update:value="handleMenuSelect"
+      :indent="24"
+      :collapsed="collapsed"
+      :collapsed-width="64"
+      :collapsed-icon-size="22"
+      inverted
+    />
+</div>
 </template>
 
 <style scoped>
+/* CSS 변수 오버라이드로 배경색 설정 */
+:deep(.n-menu) {
+  --n-item-color-hover: rgba(79, 148, 245, 0.15) !important;
+  --n-item-color-active: rgba(79, 148, 245, 0.25) !important;
+  --n-item-color-active-hover: rgba(79, 148, 245, 0.35) !important;
+  --n-item-color-active-collapsed: rgba(79, 148, 245, 0.25) !important;
+
+
+}
+
+/* 추가 스타일 for better visibility */
+
+
+
+
 </style>
