@@ -1,0 +1,57 @@
+:deep(.n-card) {
+  background-color: transparent !important;
+}
+
+:deep(.n-data-table) {
+  background-color: transparent !important;
+}
+
+:deep(.n-data-table-wrapper) {
+  background-color: transparent !important;
+}
+
+:deep(.n-page-header__title) {
+  color: #e5e7eb !important;
+}
+
+:deep(.n-card-header__main) {
+  color: #e5e7eb !important;
+}
+
+/* Pagination info 스타일 */
+:deep(.n-pagination-item) {
+  color: #fff!important;
+  border-color: #2080f0 !important;
+  background-color: transparent !important;
+}
+
+
+:deep(.n-pagination-item--button:hover) {
+  background-color: rgba(32, 128, 240, 0.1) !important;
+  border-color: #2080f0 !important;
+  
+}
+
+:deep(.n-pagination-item.n-pagination-item--active) {
+  border-color: #2080f0 !important;
+  color: #2080f0 !important;
+}
+
+:deep(.n-pagination-item--button:not(.n-pagination-item--disabled):hover) {
+   color: #2080f0 !important;
+   border-color: #2080f0 !important;
+}
+
+/* N-Input 호버 스타일 */
+:deep(.n-input:hover .n-input__border),
+:deep(.n-input:hover .n-input__state-border) {
+  border-color: #2080f0 !important;
+}
+
+:deep(.n-input.n-input--focus .n-input__border),
+:deep(.n-input.n-input--focus .n-input__state-border) {
+  border-color: #2080f0 !important;
+  box-shadow: 0 0 0 2px rgba(32, 128, 240, 0.2) !important;
+}
+
+
