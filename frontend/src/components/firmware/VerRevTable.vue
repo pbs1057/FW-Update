@@ -60,14 +60,13 @@ import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { VerRev } from '../../type/type'
 import CalendarEditIcon from '../../assets/CalendarEdit20Regular.svg'
+import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
 
 const metaStore = useFirmwareMetaStore()
-const showModal = ref(false)
-const selectedRow = ref<VerRev | null>(null)
 const searchVersion = ref<string | null>(null)
 const searchRevision = ref<string | null>(null)
 
-
+const { showModal, selectedRow, rowProps } = useMetaTableCrud<VerRev>()
 
 const data = computed(() => metaStore.getVerRevs())
 
@@ -99,14 +98,6 @@ const filteredData = computed(() => {
 })
 
 const pagination = ref({ pageSize: 10 })
-
-const rowProps = (row: VerRev) => ({
-  style: 'cursor: pointer;',
-  onClick: () => {
-    selectedRow.value = { ...row }
-    showModal.value = true
-  }
-})
 
 const handleSave = () => {
   if (selectedRow.value) {

@@ -232,6 +232,7 @@
 import { computed } from 'vue'
 import { NModal, NSpace, NForm, NInput, NInputNumber, NInputGroup, NSelect, NSwitch, NTag, NGrid, NGi, NGradientText, NButton } from 'naive-ui'
 import type { Firmware } from '../../type/type'
+import { useFirmwareRowStyle } from '../../composables/useFirmwareRowStyle'
 
 interface Props {
   show: boolean
@@ -262,10 +263,8 @@ const selectedRow = computed({
   set: (value) => value && emit('update:selectedRow', value)
 })
 
-const switchRailStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => ({
-  background: checked ? '#2080f0' : '#d0d0d0',
-  boxShadow: focused ? '0 0 0 2px rgba(32, 128, 240, 0.3)' : 'none'
-})
+// switch 스타일 (기존 로컬 정의 → 컴포저블로 통합)
+const { switchRailStyle } = useFirmwareRowStyle()
 
 const handleSave = () => {
   if (selectedRow.value) {

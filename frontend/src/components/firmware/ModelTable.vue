@@ -65,7 +65,7 @@
       </n-form>
       <template #footer>
         <n-space justify="end">
-          <n-button type="info" ghost @click="handleSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
+          <n-button type="info" ghost @click="onSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
           <n-button @click="showModal = false">Cancel</n-button>
         </n-space>
       </template>
@@ -80,17 +80,16 @@ import { NGradientText } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { Model } from '../../type/type'
+import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
 
 const metaStore = useFirmwareMetaStore()
-const showModal = ref(false)
-const selectedRow = ref<Model | null>(null)
-const isEdit = ref(false)
 
 const columns: DataTableColumns<Model> = [
-  { title: 'ID', width: 200,align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
+  { title: 'ID', width: 200, align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
   { title: 'System ID', align: 'center', key: 'systemId', sorter: (a, b) => a.systemId.localeCompare(b.systemId) },
   { title: 'Model Name', align: 'center', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-  { title: 'Buyer', align: 'center', key: 'buyer', sorter: (a, b) => a.buyer - b.buyer,
+  {
+    title: 'Buyer', align: 'center', key: 'buyer', sorter: (a, b) => a.buyer - b.buyer,
     render: (row) => {
       const buyer = metaStore.getBuyers().find(b => b.id === row.buyer)
       return buyer ? buyer.name : String(row.buyer)
@@ -101,56 +100,25 @@ const columns: DataTableColumns<Model> = [
 const data = computed(() => metaStore.getModels())
 const pagination = ref({ pageSize: 10 })
 
-const buyerOptions = computed(() => 
+const buyerOptions = computed(() =>
   metaStore.getBuyers().map(buyer => ({ label: buyer.name, value: buyer.id }))
 )
 
-const rowProps = (row: Model) => ({
-  style: 'cursor: pointer;',
-  onClick: () => {
-    selectedRow.value = { ...row }
-    isEdit.value = true
-    showModal.value = true
-  }
-})
+const { showModal, selectedRow, isEdit, rowProps, openAdd, handleSave, handleDelete } =
+  useMetaTableCrud<Model>()
 
+const handleAdd = () =>
+  openAdd(data.value, (nextId) => ({ id: nextId, systemId: '', name: '', buyer: 1 }))
 
-const handleAdd = () => {
-  // 현재 model들의 ID에서 가장 큰 값 찾기
-  const maxId = data.value.reduce((max, model) => {
-    return model.id > max ? model.id : max
-  }, 0)
-  
-  // 다음 ID 자동 생성
-  const nextId = maxId + 1
-  
-  selectedRow.value = { id: nextId, systemId: '', name: '', buyer: 1 }
-  isEdit.value = false
-  showModal.value = true
-}
+const onSave = () =>
+  handleSave(
+    (id, d) => metaStore.updateModel(id, d),
+    (item) => metaStore.addModel(item)
+  )
 
+const onDelete = () => handleDelete((id) => metaStore.deleteModel(id))
 
-const handleSave = () => {
-  if (selectedRow.value) {
-    if (isEdit.value) {
-      metaStore.updateModel(selectedRow.value.id, selectedRow.value)
-    } else {
-      metaStore.addModel(selectedRow.value)
-    }
-    showModal.value = false
-  }
-}
-
-const handleDelete = () => {
-  if (selectedRow.value) {
-    metaStore.deleteModel(selectedRow.value.id)
-    showModal.value = false
-  }
-}
-
-const handleRefresh = () => {
-  metaStore.regenerateAllData()
-}
+const handleRefresh = () => metaStore.regenerateAllData()
 </script>
 
 <style scoped src="./common-table-styles.css"></style>

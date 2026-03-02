@@ -46,8 +46,8 @@
 </template>
 
 <script setup lang="ts">
-import type { DataTableColumns, DataTableInst } from 'naive-ui'
-import { ref, computed, onMounted, nextTick } from 'vue'
+import type { DataTableColumns } from 'naive-ui'
+import { ref, computed } from 'vue'
 import { NButton, NSpace } from 'naive-ui'
 import { useFirmwareStore } from '../stores/useFirmwareStore'
 import { useFirmwareMetaStore } from '../stores/useFirmwareMetaStore'
@@ -55,102 +55,51 @@ import type { Firmware } from '../type/type'
 import BulkModifyModal from './modals/BulkModifyModal.vue'
 import UploadFirmwareModal from './modals/UploadFirmwareModal.vue'
 import FirmwareDetailModal from './modals/FirmwareDetailModal.vue'
-import Sortable from 'sortablejs'
+import { useFirmwareCrud } from '../composables/useFirmwareCrud'
+import { useFirmwareRowStyle } from '../composables/useFirmwareRowStyle'
+import { useFirmwareSortable } from '../composables/useFirmwareSortable'
+import { useMetaOptions } from '../composables/useMetaOptions'
 
 const firmwareStore = useFirmwareStore()
 const metaStore = useFirmwareMetaStore()
 
-const showModal = ref(false)
-const selectedRow = ref<Firmware | null>(null)
+// 펌웨어 CRUD (상세 모달 열기/저장/삭제/벌크 처리)
+const {
+  showModal,
+  selectedRow,
+  handleRowClick,
+  saveChanges,
+  deleteFirmware,
+  handleBulkUpdate,
+  handleBulkDelete
+} = useFirmwareCrud()
 
-// 벌크 수정 모달
+// 행 스타일 (상태별 클래스, switch 스타일)
+const { getFirmwareRowProps } = useFirmwareRowStyle()
+
+// 메타 스토어 셀렉트 옵션
+const { priorityOptions, typeOptions, modeOptions, encryptLevelOptions, modelOptions, buyerOptions } = useMetaOptions()
+
+// 벌크/업로드 모달
 const showBulkModal = ref(false)
 const showUploadModal = ref(false)
 
-const openModifyModal = () => {
-  showBulkModal.value = true
-}
-
-const openUploadModal = () => {
-  showUploadModal.value = true
-}
+const openModifyModal = () => { showBulkModal.value = true }
+const openUploadModal = () => { showUploadModal.value = true }
 
 const handleUpload = (files: File[]) => {
   console.log('Uploading files:', files)
   // TODO: 실제 업로드 로직 구현
 }
 
-const handleBulkUpdate = (payload: { ids: string[]; field: string; value: any }) => {
-  payload.ids.forEach(id => {
-    const firmware = firmwareStore.getFirmwares().find(f => f.id === id)
-    if (firmware) {
-      firmwareStore.updateFirmware(id, { ...firmware, [payload.field]: payload.value })
-    }
-  })
-}
+// rowProps: 상태별 클래스 + 클릭 핸들러
+const rowProps = (row: Firmware) => getFirmwareRowProps(row, handleRowClick)
 
-const handleBulkDelete = (ids: string[]) => {
-  ids.forEach(id => {
-    firmwareStore.deleteFirmware(id)
-  })
-}
+// 드래그앤드롭 정렬
+const data = computed(() => firmwareStore.getFirmwares())
+const { dataTableInst } = useFirmwareSortable(() => data.value)
 
-const handleRowClick = (row: Firmware) => {
-  selectedRow.value = { ...row }
-  showModal.value = true
-}
-
-const rowProps = (row: Firmware) => {
-  let className = 'custom-row'
-
-  if (row.use && row.pinUse) {
-    className += ' row-pin'
-  } else if (!row.use && row.test) {
-    className += ' row-no-use-test'
-  } else if (row.use && row.test) {
-    className += ' row-test'
-  } else if (row.use) {
-    className += ' row-use'
-  } else if (!row.use) {
-    className += ' row-no-use'
-  }
-
-  return {
-    class: className,
-    style: { cursor: 'pointer' },
-    onClick: () => {
-      handleRowClick(row)
-    }
-  }
-}
-
-// 스토어에서 옵션 가져오기
-const priorityOptions = computed(() =>
-  metaStore.getPriorities().map(p => ({ label: p.name, value: p.name }))
-)
-
-const typeOptions = computed(() =>
-  metaStore.getReleaseTypes().map(t => ({ label: t.name, value: t.id }))
-)
-
-const modeOptions = computed(() =>
-  metaStore.getBuildModes().map(m => ({ label: m.name, value: m.id }))
-)
-
-const encryptLevelOptions = computed(() =>
-  metaStore.getEncryptLvs().map(e => ({ label: e.name, value: e.name }))
-)
-
-const modelOptions = computed(() =>
-  metaStore.getModels().map(m => ({ label: m.name, value: m.name }))
-)
-
-const buyerOptions = computed(() =>
-  metaStore.getBuyers().map(b => ({ label: b.name, value: b.id }))
-)
-
-
-// Version 옵션 (중복 제거)
+// Version / Revision 필터 옵션 (중복 제거)
 const versionOptions = computed(() => {
   const versions = Array.from(new Set(data.value.map(d => d.version)))
   return versions.map(v => ({ label: v, value: v }))
@@ -160,19 +109,7 @@ const revisionOptions = computed(() =>
   metaStore.getReleaseTypes().map(r => ({ label: r.name, value: r.name }))
 )
 
-
-const saveChanges = (firmware: Firmware) => {
-  firmwareStore.updateFirmware(firmware.id, firmware)
-  console.log('저장된 데이터:', firmware)
-  showModal.value = false
-}
-
-const deleteFirmware = (id: string) => {
-  firmwareStore.deleteFirmware(id)
-  showModal.value = false
-}
-
-//ID	Version	Revision	Size	Model	Buyer	Type	Priority	Download
+//ID  Version  Revision  Size  Model  Buyer  Type  Priority  Download
 const columns = computed<DataTableColumns<Firmware>>(() => [
   {
     title: 'ID',
@@ -249,55 +186,6 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
   }
 
 ])
-
-const data = computed(() => firmwareStore.getFirmwares())
-
-const dataTableInst = ref<DataTableInst | null>(null)
-
-function filterAddress() {
-  dataTableInst.value?.filter({
-    buyer: ['For']
-  })
-}
-
-function sortName() {
-  dataTableInst.value?.sort('version', 'ascend')
-}
-
-function clearFilters() {
-  dataTableInst.value?.clearFilters()
-}
-
-function clearSorter() {
-  dataTableInst.value?.clearSorter()
-}
-
-// 드래그앤드롭 기능 초기화
-onMounted(() => {
-  nextTick(() => {
-    const table = document.querySelector('.n-data-table-tbody') as HTMLElement
-    if (table) {
-      Sortable.create(table, {
-        animation: 150,
-        handle: '.n-data-table-td',
-        ghostClass: 'sortable-ghost',
-        chosenClass: 'sortable-chosen',
-        dragClass: 'sortable-drag',
-        onEnd: (evt) => {
-          const oldIndex = evt.oldIndex
-          const newIndex = evt.newIndex
-          
-          if (oldIndex !== undefined && newIndex !== undefined && oldIndex !== newIndex) {
-            const items = [...data.value]
-            const [movedItem] = items.splice(oldIndex, 1)
-            items.splice(newIndex, 0, movedItem)
-            firmwareStore.reorderFirmwares(items)
-          }
-        }
-      })
-    }
-  })
-})
 </script>
 
 <style scoped>

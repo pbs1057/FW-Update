@@ -1,19 +1,3 @@
-export interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  is_read?: boolean;
-  created_at: string;
-  updated_at?: string;
-}
-
-export interface StatsData {
-  total_user: number;
-  revenue: number;
-  active_project: number;
-}
-
 export interface Firmware {
   key: number;
   id: string;

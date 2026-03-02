@@ -52,7 +52,7 @@
         </n-form>
         <template #footer>
           <n-space justify="end">
-            <n-button type="info" ghost @click="handleSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
+            <n-button type="info" ghost @click="onSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
             <n-button @click="showModal = false">Cancel</n-button>
           </n-space>
         </template>
@@ -67,62 +67,34 @@ import { NGradientText } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { ReleaseType } from '../../type/type'
+import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
 
 const metaStore = useFirmwareMetaStore()
 
 const columns: DataTableColumns<ReleaseType> = [
-  { title: 'ID', width: 200,align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
+  { title: 'ID', width: 200, align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
   { title: 'Name', align: 'center', key: 'name' },
   { title: 'File String', align: 'center', key: 'fileString' }
 ]
-const selectedRow = ref<ReleaseType | null>(null)
+
 const data = computed(() => metaStore.getReleaseTypes())
 const pagination = ref({ pageSize: 10 })
-const showModal = ref(false)
-const isEdit = ref(false)
 
-const rowProps = (row: ReleaseType) => ({
-  style: 'cursor: pointer;',
-  onClick: () => {
-    selectedRow.value = { ...row }
-    isEdit.value = true
-    showModal.value = true
-  }
-})
+const { showModal, selectedRow, isEdit, rowProps, openAdd, handleSave, handleDelete } =
+  useMetaTableCrud<ReleaseType>()
 
-const handleAdd = () => {
-  // 현재 release type들의 ID에서 가장 큰 값 찾기
-  const maxId = data.value.reduce((max, type) => {
-    return type.id > max ? type.id : max
-  }, 0)
-  
-  selectedRow.value = { id: maxId + 1, name: '', fileString: '' }
-  isEdit.value = false
-  showModal.value = true
-}
+const handleAdd = () =>
+  openAdd(data.value, (nextId) => ({ id: nextId, name: '', fileString: '' }))
 
+const onSave = () =>
+  handleSave(
+    (id, d) => metaStore.updateReleaseType(id, d),
+    (item) => metaStore.addReleaseType(item)
+  )
 
-const handleSave = () => {
-  if (selectedRow.value) {
-    if (isEdit.value) {
-      metaStore.updateReleaseType(selectedRow.value.id, selectedRow.value)
-    } else {
-      metaStore.addReleaseType(selectedRow.value)
-    }
-    showModal.value = false
-  }
-}
+const onDelete = () => handleDelete((id) => metaStore.deleteReleaseType(id))
 
-const handleDelete = () => {
-  if (selectedRow.value) {
-    metaStore.deleteReleaseType(selectedRow.value.id)
-    showModal.value = false
-  }
-}
-
-const handleRefresh = () => {
-  metaStore.regenerateAllData()
-}
+const handleRefresh = () => metaStore.regenerateAllData()
 </script>
 
 <style scoped src="./common-table-styles.css"></style>

@@ -44,7 +44,7 @@
       </n-form>
       <template #footer>
         <n-space justify="end">
-          <n-button type="info" ghost @click="handleSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
+          <n-button type="info" ghost @click="onSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
           <n-button @click="showModal = false">Cancel</n-button>
         </n-space>
       </template>
@@ -59,11 +59,9 @@ import { NGradientText } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { BuildMode } from '../../type/type'
+import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
 
 const metaStore = useFirmwareMetaStore()
-const showModal = ref(false)
-const selectedRow = ref<BuildMode | null>(null)
-const isEdit = ref(false)
 
 const columns: DataTableColumns<BuildMode> = [
   { title: 'ID', align: 'center', width: 200, key: 'id', sorter: (a, b) => a.id - b.id },
@@ -74,46 +72,21 @@ const columns: DataTableColumns<BuildMode> = [
 const data = computed(() => metaStore.getBuildModes())
 const pagination = ref({ pageSize: 10 })
 
-const rowProps = (row: BuildMode) => ({
-  style: 'cursor: pointer;',
-  onClick: () => {
-    selectedRow.value = { ...row }
-    isEdit.value = true
-    showModal.value = true
-  }
-})
+const { showModal, selectedRow, isEdit, rowProps, openAdd, handleSave, handleDelete } =
+  useMetaTableCrud<BuildMode>()
 
-const handleAdd = () => {
-  const maxId = data.value.reduce((max, mode) => {
-    return mode.id > max ? mode.id : max
-  }, 0)
-  
-  selectedRow.value = { id: maxId + 1, name: '', fileString: '' }
-  isEdit.value = false
-  showModal.value = true
-}
+const handleAdd = () =>
+  openAdd(data.value, (nextId) => ({ id: nextId, name: '', fileString: '' }))
 
-const handleSave = () => {
-  if (selectedRow.value) {
-    if (isEdit.value) {
-      metaStore.updateBuildMode(selectedRow.value.id, selectedRow.value)
-    } else {
-      metaStore.addBuildMode(selectedRow.value)
-    }
-    showModal.value = false
-  }
-}
+const onSave = () =>
+  handleSave(
+    (id, d) => metaStore.updateBuildMode(id, d),
+    (item) => metaStore.addBuildMode(item)
+  )
 
-const handleDelete = () => {
-  if (selectedRow.value) {
-    metaStore.deleteBuildMode(selectedRow.value.id)
-    showModal.value = false
-  }
-}
+const onDelete = () => handleDelete((id) => metaStore.deleteBuildMode(id))
 
-const handleRefresh = () => {
-  metaStore.regenerateAllData()
-}
+const handleRefresh = () => metaStore.regenerateAllData()
 </script>
 
 <style scoped src="./common-table-styles.css"></style>

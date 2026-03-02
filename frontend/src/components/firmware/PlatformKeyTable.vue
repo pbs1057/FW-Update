@@ -32,7 +32,7 @@
       </n-form>
       <template #footer>
         <n-space justify="end">
-          <n-button type="info" ghost @click="handleSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
+          <n-button type="info" ghost @click="onSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
           <n-button @click="showModal = false">Cancel</n-button>
         </n-space>
       </template>
@@ -47,56 +47,31 @@ import { NGradientText } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { PlatformKey } from '../../type/type'
+import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
 
 const metaStore = useFirmwareMetaStore()
-const showModal = ref(false)
-const selectedRow = ref<PlatformKey | null>(null)
-const isEdit = ref(false)
 
 const columns: DataTableColumns<PlatformKey> = [
-  { title: 'ID',width: 200, align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
+  { title: 'ID', width: 200, align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
   { title: 'Key Date', align: 'center', key: 'keyDate', sorter: (a, b) => a.keyDate.localeCompare(b.keyDate) }
 ]
 
 const data = computed(() => metaStore.getPlatformKeys())
 const pagination = ref({ pageSize: 10 })
 
-const rowProps = (row: PlatformKey) => ({
-  style: 'cursor: pointer;',
-  onClick: () => {
-    selectedRow.value = { ...row }
-    isEdit.value = true
-    showModal.value = true
-  }
-})
+const { showModal, selectedRow, isEdit, rowProps, openAdd, handleSave, handleDelete } =
+  useMetaTableCrud<PlatformKey>()
 
-const handleAdd = () => {
-  const maxId = data.value.reduce((max, key) => {
-    return key.id > max ? key.id : max
-  }, 0)
-  
-  selectedRow.value = { id: maxId + 1, keyDate: '' }
-  isEdit.value = false
-  showModal.value = true
-}
+const handleAdd = () =>
+  openAdd(data.value, (nextId) => ({ id: nextId, keyDate: '' }))
 
-const handleSave = () => {
-  if (selectedRow.value) {
-    if (isEdit.value) {
-      metaStore.updatePlatformKey(selectedRow.value.id, selectedRow.value)
-    } else {
-      metaStore.addPlatformKey(selectedRow.value)
-    }
-    showModal.value = false
-  }
-}
+const onSave = () =>
+  handleSave(
+    (id, d) => metaStore.updatePlatformKey(id, d),
+    (item) => metaStore.addPlatformKey(item)
+  )
 
-const handleDelete = () => {
-  if (selectedRow.value) {
-    metaStore.deletePlatformKey(selectedRow.value.id)
-    showModal.value = false
-  }
-}
+const onDelete = () => handleDelete((id) => metaStore.deletePlatformKey(id))
 </script>
 
 <style scoped src="./common-table-styles.css"></style>
