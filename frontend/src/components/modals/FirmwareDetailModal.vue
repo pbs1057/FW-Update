@@ -233,6 +233,7 @@ import { computed } from 'vue'
 import { NModal, NSpace, NForm, NInput, NInputNumber, NInputGroup, NSelect, NSwitch, NTag, NGrid, NGi, NGradientText, NButton } from 'naive-ui'
 import type { Firmware } from '../../type/type'
 import { useFirmwareRowStyle } from '../../composables/useFirmwareRowStyle'
+import { useConfirm } from '../../composables/useConfirm'
 
 interface Props {
   show: boolean
@@ -265,17 +266,20 @@ const selectedRow = computed({
 
 // switch 스타일 (기존 로컬 정의 → 컴포저블로 통합)
 const { switchRailStyle } = useFirmwareRowStyle()
+const { confirm } = useConfirm()
 
-const handleSave = () => {
-  if (selectedRow.value) {
-    emit('save', selectedRow.value)
-  }
+const handleSave = async () => {
+  if (!selectedRow.value) return
+  const ok = await confirm('Do you want to update firmware?')
+  if (!ok) return
+  emit('save', selectedRow.value)
 }
 
-const handleDelete = () => {
-  if (selectedRow.value && confirm(`ID ${selectedRow.value.id} 펌웨어를 삭제하시겠습니까?`)) {
-    emit('delete', selectedRow.value.id)
-  }
+const handleDelete = async () => {
+  if (!selectedRow.value) return
+  const ok = await confirm(`Do you want to delete ID ${selectedRow.value.id}?`)
+  if (!ok) return
+  emit('delete', selectedRow.value.id)
 }
 </script>
 

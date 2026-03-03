@@ -11,7 +11,7 @@ import BuildModeTable from './components/firmware/BuildModeTable.vue'
 import PriorityTable from './components/firmware/PriorityTable.vue'
 import PlatformKeyTable from './components/firmware/PlatformKeyTable.vue'
 import EncryptLvTable from './components/firmware/EncryptLvTable.vue'
-import { NConfigProvider, NMessageProvider, NGlobalStyle, NButton, NIcon, darkTheme, lightTheme } from 'naive-ui'
+import { NConfigProvider, NMessageProvider, NDialogProvider, NGlobalStyle, NButton, NIcon, darkTheme, lightTheme } from 'naive-ui'
 import { computed, provide, watchEffect } from 'vue'
 
 const currentPage = ref('firmware')
@@ -51,6 +51,7 @@ const toggleTheme = () => {
   <n-config-provider :theme="theme">
     <n-global-style />
     <n-message-provider>
+      <n-dialog-provider>
       <div class="flex flex-col h-screen font-poppins">
         <!-- 상단 헤더 -->
         <div class="px-20 pt-6 pb-4 flex items-center border-b border-gray-600">
@@ -90,6 +91,7 @@ const toggleTheme = () => {
           </div>
         </div>
       </div>
+      </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
 </template>

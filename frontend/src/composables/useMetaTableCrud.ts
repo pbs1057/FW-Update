@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useConfirm } from './useConfirm'
 
 /**
  * 메타 테이블 공통 CRUD 컴포저블
@@ -9,6 +10,7 @@ export function useMetaTableCrud<T extends { id: number }>() {
   const showModal = ref(false)
   const selectedRow = ref<T | null>(null)
   const isEdit = ref(false)
+  const { confirm } = useConfirm()
 
   /** 행 클릭 시 수정 모달 오픈 */
   const rowProps = (row: T) => ({
@@ -37,29 +39,32 @@ export function useMetaTableCrud<T extends { id: number }>() {
    * @param updateFn 수정 시 호출할 스토어 함수
    * @param addFn    추가 시 호출할 스토어 함수
    */
-  const handleSave = (
+  const handleSave = async (
     updateFn: (id: number, data: Partial<T>) => void,
     addFn: (item: T) => void
   ) => {
-    if (selectedRow.value) {
-      if (isEdit.value) {
-        updateFn(selectedRow.value.id, selectedRow.value)
-      } else {
-        addFn(selectedRow.value)
-      }
-      showModal.value = false
+    if (!selectedRow.value) return
+    const message = isEdit.value ? 'Do you want to update?' : 'Do you want to add?'
+    const ok = await confirm(message)
+    if (!ok) return
+    if (isEdit.value) {
+      updateFn(selectedRow.value.id, selectedRow.value)
+    } else {
+      addFn(selectedRow.value)
     }
+    showModal.value = false
   }
 
   /**
    * 삭제 버튼 클릭 핸들러
    * @param deleteFn 삭제 시 호출할 스토어 함수
    */
-  const handleDelete = (deleteFn: (id: number) => void) => {
-    if (selectedRow.value) {
-      deleteFn(selectedRow.value.id)
-      showModal.value = false
-    }
+  const handleDelete = async (deleteFn: (id: number) => void) => {
+    if (!selectedRow.value) return
+    const ok = await confirm(`Do you want to delete ID ${selectedRow.value.id}?`)
+    if (!ok) return
+    deleteFn(selectedRow.value.id)
+    showModal.value = false
   }
 
   return {

@@ -52,6 +52,7 @@ import { ref, computed } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
 import { NModal, NSpace, NSelect, NTag, NButton, NDataTable } from 'naive-ui'
 import type { Firmware } from '../../type/type'
+import { useConfirm } from '../../composables/useConfirm'
 
 
 
@@ -70,6 +71,7 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+const { confirm } = useConfirm()
 
 const checkedRowKeys = ref<Array<string | number>>([])
 const bulkPriority = ref<string | null>(null)
@@ -122,8 +124,10 @@ const rowClassName = (row: Firmware) => {
   return checkedRowKeys.value.includes(row.id) ? 'checked-row' : ''
 }
 
-const applyBulkPriority = () => {
+const applyBulkPriority = async () => {
   if (!bulkPriority.value || checkedRowKeys.value.length === 0) return
+  const ok = await confirm(`Do you want to update priority for ${checkedRowKeys.value.length} item(s)?`)
+  if (!ok) return
   emit('bulkUpdate', { 
     ids: checkedRowKeys.value as string[], 
     field: 'priority', 
@@ -132,8 +136,10 @@ const applyBulkPriority = () => {
   bulkPriority.value = null
 }
 
-const applyBulkUse = () => {
+const applyBulkUse = async () => {
   if (bulkUse.value === null || checkedRowKeys.value.length === 0) return
+  const ok = await confirm(`Do you want to update use for ${checkedRowKeys.value.length} item(s)?`)
+  if (!ok) return
   emit('bulkUpdate', { 
     ids: checkedRowKeys.value as string[], 
     field: 'use', 
@@ -142,8 +148,10 @@ const applyBulkUse = () => {
   bulkUse.value = null
 }
 
-const applyBulkTest = () => {
+const applyBulkTest = async () => {
   if (bulkTest.value === null || checkedRowKeys.value.length === 0) return
+  const ok = await confirm(`Do you want to update test for ${checkedRowKeys.value.length} item(s)?`)
+  if (!ok) return
   emit('bulkUpdate', { 
     ids: checkedRowKeys.value as string[], 
     field: 'test', 
@@ -152,12 +160,12 @@ const applyBulkTest = () => {
   bulkTest.value = null
 }
 
-const handleBulkDelete = () => {
+const handleBulkDelete = async () => {
   if (checkedRowKeys.value.length === 0) return
-  if (confirm(`${checkedRowKeys.value.length}개의 펌웨어를 삭제하시겠습니까?`)) {
-    emit('bulkDelete', checkedRowKeys.value as string[])
-    checkedRowKeys.value = []
-  }
+  const ok = await confirm(`Do you want to delete ${checkedRowKeys.value.length} item(s)?`)
+  if (!ok) return
+  emit('bulkDelete', checkedRowKeys.value as string[])
+  checkedRowKeys.value = []
 }
 
 const bulkColumns = computed<DataTableColumns<Firmware>>(() => [

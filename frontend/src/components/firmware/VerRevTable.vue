@@ -61,6 +61,7 @@ import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { VerRev } from '../../type/type'
 import CalendarEditIcon from '../../assets/CalendarEdit20Regular.svg?component'
 import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
+import { useConfirm } from '../../composables/useConfirm'
 
 
 const metaStore = useFirmwareMetaStore()
@@ -68,6 +69,7 @@ const searchVersion = ref<string | null>(null)
 const searchRevision = ref<string | null>(null)
 
 const { showModal, selectedRow, rowProps } = useMetaTableCrud<VerRev>()
+const { confirm } = useConfirm()
 
 const data = computed(() => metaStore.getVerRevs())
 
@@ -100,11 +102,12 @@ const filteredData = computed(() => {
 
 const pagination = ref({ pageSize: 10 })
 
-const handleSave = () => {
-  if (selectedRow.value) {
-    metaStore.updateVerRev(selectedRow.value.id, selectedRow.value)
-    showModal.value = false
-  }
+const handleSave = async () => {
+  if (!selectedRow.value) return
+  const ok = await confirm('Do you want to update release note?')
+  if (!ok) return
+  metaStore.updateVerRev(selectedRow.value.id, selectedRow.value)
+  showModal.value = false
 }
 
 const handleSearch = () => {

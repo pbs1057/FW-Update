@@ -49,7 +49,7 @@
   --n-border-disabled: 1px solid var(--accent-color) !important;
   --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
   --n-caret-color: var(--accent-color) !important;
- 
+  --n-color-focus: transparent !important;
 }
 :deep(.n-select .n-base-selection) {
   --n-border: 1px solid var(--accent-color) !important;

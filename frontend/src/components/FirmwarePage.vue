@@ -6,6 +6,7 @@
           <n-tag>Use</n-tag>
           <n-tag type="error">NoUse</n-tag>
           <n-tag type="info">Test</n-tag>
+          <div class ="textColor: 'rgba(249, 127, 188, 0.831)'"></div>
           <n-tag ghost
             :color="{ textColor: 'rgba(249, 127, 188, 0.831)', borderColor: 'rgba(249, 127, 188, 0.831)' }">NoUse
             & Test</n-tag>
