@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { ref, computed, h } from 'vue'
-import { NGradientText, NIcon } from 'naive-ui'
+import { NGradientText, NIcon, useOsTheme } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { VerRev } from '../../type/type'
@@ -65,6 +65,8 @@ import { useConfirm } from '../../composables/useConfirm'
 
 
 const metaStore = useFirmwareMetaStore()
+const osTheme = useOsTheme()
+const isDark = computed(() => osTheme.value === 'dark')
 const searchVersion = ref<string | null>(null)
 const searchRevision = ref<string | null>(null)
 
@@ -104,10 +106,13 @@ const pagination = ref({ pageSize: 10 })
 
 const handleSave = async () => {
   if (!selectedRow.value) return
-  const ok = await confirm('Do you want to update release note?')
-  if (!ok) return
-  metaStore.updateVerRev(selectedRow.value.id, selectedRow.value)
   showModal.value = false
+  const ok = await confirm('Do you want to update release note?')
+  if (!ok) {
+    showModal.value = true
+    return
+  }
+  metaStore.updateVerRev(selectedRow.value.id, selectedRow.value)
 }
 
 const handleSearch = () => {
@@ -121,7 +126,7 @@ const handleClear = () => {
   pagination.value = { pageSize: 10 }
 }
 
-const columns: DataTableColumns<VerRev> = [
+const columns = computed<DataTableColumns<VerRev>>(() => [
   {
     title: 'Version', width: 300, align: 'center', key: 'version', sorter: (a, b) => a.version.localeCompare(b.version),
     filterOptions: versionOptions.value,
@@ -143,14 +148,14 @@ const columns: DataTableColumns<VerRev> = [
     width: 300,
     render: (row) => {
       if (row.note && row.note.trim()) {
-        return h(NIcon, { size: 20, color: '#ffffff', style: { cursor: 'pointer', verticalAlign: 'middle' } }, {
+        return h(NIcon, { size: 20, color: '--select-menu-text' , style: { cursor: 'pointer', verticalAlign: 'middle' } }, {
           default: () => h(CalendarEditIcon)
         })
       }
       return null
     }
   }
-]
+])
 </script>
 
 <style scoped src="./common-table-styles.css"></style>

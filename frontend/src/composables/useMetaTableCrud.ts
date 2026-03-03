@@ -45,14 +45,17 @@ export function useMetaTableCrud<T extends { id: number }>() {
   ) => {
     if (!selectedRow.value) return
     const message = isEdit.value ? 'Do you want to update?' : 'Do you want to add?'
+    showModal.value = false
     const ok = await confirm(message)
-    if (!ok) return
+    if (!ok) {
+      showModal.value = true
+      return
+    }
     if (isEdit.value) {
       updateFn(selectedRow.value.id, selectedRow.value)
     } else {
       addFn(selectedRow.value)
     }
-    showModal.value = false
   }
 
   /**
@@ -61,10 +64,13 @@ export function useMetaTableCrud<T extends { id: number }>() {
    */
   const handleDelete = async (deleteFn: (id: number) => void) => {
     if (!selectedRow.value) return
-    const ok = await confirm(`Do you want to delete ID ${selectedRow.value.id}?`)
-    if (!ok) return
-    deleteFn(selectedRow.value.id)
     showModal.value = false
+    const ok = await confirm(`Do you want to delete ID ${selectedRow.value.id}?`)
+    if (!ok) {
+      showModal.value = true
+      return
+    }
+    deleteFn(selectedRow.value.id)
   }
 
   return {

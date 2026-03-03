@@ -223,7 +223,7 @@ const bulkColumns = computed<DataTableColumns<Firmware>>(() => [
     title: 'Test',
     key: 'test',
     width: 80,
-    render: (row) => row.test ? 'X' : 'O'
+    render: (row) => row.test ? 'O' : 'X'
   }
 ])
 </script>
@@ -255,7 +255,6 @@ const bulkColumns = computed<DataTableColumns<Firmware>>(() => [
 }
 
 :deep(.n-select .n-base-selection) {
-  --n-border: 1px solid var(--accent-color) !important;
   --n-border-hover: 1px solid var(--accent-color) !important;
   --n-border-focus: 1px solid var(--accent-color) !important;
   --n-border-active: 1px solid var(--accent-color) !important;
@@ -263,7 +262,6 @@ const bulkColumns = computed<DataTableColumns<Firmware>>(() => [
   --n-box-shadow-active: 0 0 0 2px var(--accent-color-20) !important;
   --n-caret-color: var(--accent-color) !important;
   --n-arrow-color: var(--accent-color) !important;
-  --n-color: transparent !important;
   --n-color-active: transparent !important;
 }
 </style>
