@@ -280,4 +280,35 @@ const handleDelete = () => {
 </script>
 
 <style scoped>
+:deep(.n-select) {
+  color: var(--accent-color) !important;
+}
+
+:deep(.n-select .n-base-selection) {
+  --n-border: 1px solid var(--accent-color) !important;
+  --n-border-hover: 1px solid var(--accent-color) !important;
+  --n-border-focus: 1px solid var(--accent-color) !important;
+  --n-border-active: 1px solid var(--accent-color) !important;
+  --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
+  --n-box-shadow-active: 0 0 0 2px var(--accent-color-20) !important;
+  --n-caret-color: var(--accent-color) !important;
+  --n-arrow-color: var(--accent-color) !important;
+  --n-color: transparent !important;
+  --n-color-active: transparent !important;
+}
+
+:deep(.n-input-number .n-input) {
+  --n-border: 1px solid var(--accent-color) !important;
+  --n-border-hover: 1px solid var(--accent-color) !important;
+  --n-border-focus: 1px solid var(--accent-color) !important;
+  --n-border-disabled: 1px solid var(--accent-color) !important;
+  --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
+  --n-caret-color: var(--accent-color) !important;
+  --n-color-focus: transparent !important;
+}
+
+:deep(.n-input-number-button) {
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
 </style>

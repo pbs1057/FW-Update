@@ -3,7 +3,7 @@ import type { Firmware } from '../type/type'
 import { useFirmwareStore } from '../stores/useFirmwareStore'
 
 /**
- * 펌웨어 CRUD 공통 로직 컴포저블
+ *  CRUD 공통 로직
  * - 행 클릭 → 상세 모달
  * - 저장 / 삭제 / 벌크 수정 / 벌크 삭제
  */

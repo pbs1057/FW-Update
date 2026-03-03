@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import { useFirmwareMetaStore } from '../stores/useFirmwareMetaStore'
 
 /**
- * 메타 스토어에서 각종 선택 옵션을 계산해 반환하는 컴포저블
+ * 테이블 필터 옵션을 반환
  * FirmwarePage, BulkModifyModal wrapping 등 여러 곳에서 공통 사용
  */
 export function useMetaOptions() {
@@ -29,7 +29,7 @@ export function useMetaOptions() {
   )
 
   const buyerOptions = computed(() =>
-    metaStore.getBuyers().map(b => ({ label: b.name, value: b.id }))
+    metaStore.getBuyers().map(b => ({ label: b.name, value: b.name }))
   )
 
   return {

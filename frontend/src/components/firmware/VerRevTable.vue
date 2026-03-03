@@ -5,9 +5,9 @@
     </n-space>
     <n-card style=" background-color: transparent;" :bordered="false">
       <n-data-table ref="dataTableInst" :columns="columns" :data="filteredData" :pagination="pagination"
-        :row-props="rowProps" :row-key="(row: VerRev) => row.id" max-height="65vh":scroll-x="800" />
+        :row-props="rowProps" :row-key="(row: VerRev) => row.id" max-height="65vh" :scroll-x="800" />
 
-      <n-modal v-model:show="showModal" preset="card" style="width: 500px;" :header-style="{ paddingBottom: '8px' }" >
+      <n-modal v-model:show="showModal" preset="card" style="width: 500px;" :header-style="{ paddingBottom: '8px' }">
         <template #header>
           <n-gradient-text type="info">
             Modify Release Note
@@ -59,8 +59,9 @@ import { NGradientText, NIcon } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { VerRev } from '../../type/type'
-import CalendarEditIcon from '../../assets/CalendarEdit20Regular.svg'
+import CalendarEditIcon from '../../assets/CalendarEdit20Regular.svg?component'
 import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
+
 
 const metaStore = useFirmwareMetaStore()
 const searchVersion = ref<string | null>(null)
@@ -125,7 +126,8 @@ const columns: DataTableColumns<VerRev> = [
       return row.version === value
     }
   },
-  { title: 'Revision', align: 'center', key: 'revision', sorter: (a, b) => a.revision.localeCompare(b.revision),
+  {
+    title: 'Revision', align: 'center', key: 'revision', sorter: (a, b) => a.revision.localeCompare(b.revision),
     filterOptions: revisionOptions.value,
     filter(value, row) {
       return row.revision === value
@@ -138,16 +140,8 @@ const columns: DataTableColumns<VerRev> = [
     width: 300,
     render: (row) => {
       if (row.note && row.note.trim()) {
-        return h('img', {
-          src: CalendarEditIcon,
-          style: {
-            width: '20px',
-            height: '20px',
-            cursor: 'pointer',
-            color: '#2080f0',
-            verticalAlign: 'middle',
-            display: 'inline-block'
-          }
+        return h(NIcon, { size: 20, color: '#ffffff', style: { cursor: 'pointer', verticalAlign: 'middle' } }, {
+          default: () => h(CalendarEditIcon)
         })
       }
       return null

@@ -7,12 +7,6 @@
       </n-space>
     </n-space>
   <n-card style=" background-color: transparent;" :bordered="false">
-    <template #header-extra>
-      <n-space>
-        <n-button size="small" @click="handleAdd">추가</n-button>
-        <n-button size="small" @click="handleRefresh">새로고침</n-button>
-      </n-space>
-    </template>
     <n-data-table
       :columns="columns"
       :data="data"
@@ -33,14 +27,6 @@
         <n-form-item :show-feedback="false">
           <n-input-group>
             <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
-              ID
-            </n-tag>
-            <n-input v-model:value="selectedRow.id" :disabled="isEdit" />
-          </n-input-group>
-        </n-form-item>
-        <n-form-item :show-feedback="false">
-          <n-input-group>
-            <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
               System ID
             </n-tag>
             <n-input v-model:value="selectedRow.systemId" />
@@ -56,7 +42,7 @@
         </n-form-item>
         <n-form-item :show-feedback="false">
           <n-input-group>
-            <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
+            <n-tag type="info" style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">
               Buyer
             </n-tag>
             <n-select v-model:value="selectedRow.buyer" :options="buyerOptions" />

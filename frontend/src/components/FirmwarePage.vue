@@ -3,11 +3,11 @@
     <n-space vertical :size="12">
       <n-space justify="space-between" style="width: 100%;">
         <n-space>
-          <n-tag ghost :color="{color: 'rgba(107, 142, 158, 0.3)',textColor: 'white', borderColor: 'white' }">Use</n-tag>
+          <n-tag>Use</n-tag>
           <n-tag type="error">NoUse</n-tag>
           <n-tag type="info">Test</n-tag>
           <n-tag ghost
-            :color="{ color: 'rgba(147, 142, 158, 0.3)', textColor: 'rgb(255,231,242)', borderColor: 'rgb(255,231,242)' }">NoUse
+            :color="{ textColor: 'rgba(249, 127, 188, 0.831)', borderColor: 'rgba(249, 127, 188, 0.831)' }">NoUse
             & Test</n-tag>
           <n-tag type="success">Pin</n-tag>
         </n-space>
@@ -17,16 +17,26 @@
         </n-space>
       </n-space>
 
-      <n-data-table ref="dataTableInst" :columns="columns" :data="data" 
-        :pagination="{ pageSize: 10, showSizePicker: false }"
-        :row-props="rowProps" max-height="65vh" :scroll-x="1200" />
+      <n-data-table 
+      ref="dataTableInst" 
+      :columns="columns" 
+      :data="data" 
+      :pagination="{ showSizePicker: true, pageSizes: [10, 20, 50, 200] }"
+      :row-props="rowProps" max-height="65vh" :scroll-x="1200" />
 
       <!-- 업로드 모달 -->
-      <UploadFirmwareModal v-model:show="showUploadModal" @upload="handleUpload" />
+      <UploadFirmwareModal 
+      v-model:show="showUploadModal" 
+      @upload="handleUpload" />
 
       <!-- 벌크 수정 모달 -->
-      <BulkModifyModal v-model:show="showBulkModal" :data="data" :priority-options="priorityOptions"
-        :model-options="modelOptions" @bulk-update="handleBulkUpdate" @bulk-delete="handleBulkDelete" />
+      <BulkModifyModal 
+      v-model:show="showBulkModal" 
+      :data="data" 
+      :priority-options="priorityOptions"
+      :model-options="modelOptions" 
+      @bulk-update="handleBulkUpdate" 
+      @bulk-delete="handleBulkDelete" />
 
       <!-- 상세 정보 모달 -->
       <FirmwareDetailModal  
@@ -95,8 +105,10 @@ const handleUpload = (files: File[]) => {
 // rowProps: 상태별 클래스 + 클릭 핸들러
 const rowProps = (row: Firmware) => getFirmwareRowProps(row, handleRowClick)
 
-// 드래그앤드롭 정렬
+// 펌웨어 데이터
 const data = computed(() => firmwareStore.getFirmwares())
+
+// 드래그앤드롭 정렬
 const { dataTableInst } = useFirmwareSortable(() => data.value)
 
 // Version / Revision 필터 옵션 (중복 제거)
@@ -161,10 +173,6 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
     filter(value, row) {
       return row.buyer === value
     },
-    render(row) {
-      const buyer = metaStore.getBuyers().find(b => b.id === row.buyer)
-      return buyer ? buyer.name : String(row.buyer)
-    }
   },
   {
     title: 'Type',
@@ -190,9 +198,8 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
 
 <style scoped>
 :deep(.n-data-table) {
-  border-color: #2080f0 !important;
+  border-color: var(--accent-color) !important;
   background-color: transparent !important;
-  
 }
 
 :deep(.n-data-table-wrapper) {
@@ -211,7 +218,7 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
 
 /* No use & Test - 핑크색 */
 :deep(.row-no-use-test td) {
-  background-color: rgba(255, 105, 180, 0.15) !important;
+  background-color: rgba(249, 127, 188, 0.831) !important;
 }
 
 :deep(.row-no-use-test:hover td) {
@@ -238,26 +245,57 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
 
 /* Pagination info 스타일 */
 :deep(.n-pagination-item) {
-  color: #fff!important;
-  border-color: #2080f0 !important;
+  border-color: var(--accent-color) !important;
   background-color: transparent !important;
 }
 
-
 :deep(.n-pagination-item--button:hover) {
-  background-color: rgba(32, 128, 240, 0.1) !important;
-  border-color: #2080f0 !important;
-  
+  background-color: var(--accent-color-10) !important;
+  border-color: var(--accent-color) !important;
 }
 
 :deep(.n-pagination-item.n-pagination-item--active) {
-  border-color: #2080f0 !important;
-  color: #2080f0 !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
 }
 
 :deep(.n-pagination-item--button:not(.n-pagination-item--disabled):hover) {
-   color: #2080f0 !important;
-   border-color: #2080f0 !important;
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
+
+/* Pagination size picker 스타일 - CSS 변수 override */
+:deep(.n-pagination .n-select .n-base-selection) {
+  --n-border: 1px solid var(--accent-color) !important;
+  --n-border-hover: 1px solid var(--accent-color) !important;
+  --n-border-focus: 1px solid var(--accent-color) !important;
+  --n-border-active: 1px solid var(--accent-color) !important;
+  --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
+  --n-box-shadow-active: 0 0 0 2px var(--accent-color-20) !important;
+  --n-box-shadow-hover: none !important;
+  --n-caret-color: var(--accent-color) !important;
+  --n-color: transparent !important;
+  --n-color-active: transparent !important;
+  --n-arrow-color: var(--accent-color) !important;
+  --n-loading-color: var(--accent-color) !important;
+}
+
+:deep(.n-pagination) {
+  color: var(--accent-color) !important;
+}
+
+:global(.n-select-menu) {
+  background-color: var(--select-menu-bg) !important;
+  border-color: var(--accent-color) !important;
+  --n-color: var(--select-menu-bg) !important;
+  --n-option-color-pending: var(--accent-color-15) !important;
+  --n-option-color-active: var(--accent-color-10) !important;
+  --n-option-color-active-pending: var(--accent-color-20) !important;
+  --n-option-text-color: var(--select-menu-text) !important;
+  --n-option-text-color-active: var(--accent-color) !important;
+  --n-option-text-color-pressed: var(--accent-color) !important;
+  --n-option-check-color: var(--accent-color) !important;
+  --n-group-header-text-color: rgba(128, 128, 128, 0.7) !important;
 }
 
 /* 드래그앤드롭 스타일 */

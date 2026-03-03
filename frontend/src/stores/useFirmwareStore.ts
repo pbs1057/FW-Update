@@ -9,7 +9,7 @@ const randomBoolean = () => Math.random() > 0.5
 
 const versions = ['v1.6.8', 'v1.6.9', 'v1.7.0', 'v1.7.1', 'v1.7.2', 'v1.8.0', 'v1.8.1', 'v2.0.0', 'v2.0.1', 'v2.1.0']
 const models = ['Model A', 'Model B', 'Model C', 'Model D', 'Model E', 'Model F', 'Model G', 'Model H']
-const buyers = [1, 2, 3, 4, 5, 6, 7, 8]
+const buyers = ['FOR', 'FALC', 'BLA', 'ICON', 'ZP', 'TEST', 'OEM', 'PARTNER']
 const types = ['FULL', 'RELEASE', 'PATCH', 'RECOVERY']
 const modes = ['FACTORY', 'BUYER', 'DEBUG', 'KDBG']
 const priorities = ['Force', 'High', 'Normal', 'Low', 'Urgent']

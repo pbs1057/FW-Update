@@ -8,7 +8,7 @@
     
   >
   <template #header>
-  <n-gradient-text type="info" :size="24">VerRev</n-gradient-text></template>
+  <n-gradient-text type="info" :size="24">Modify Firmware</n-gradient-text></template>
     <n-space vertical :size="12">
       <!-- 액션 컨트롤 -->
       <n-space justify="space-between">
@@ -41,6 +41,7 @@
         :row-props="rowProps"
         :row-class-name="rowClassName"
         max-height="55vh"
+        @update:checked-row-keys="handleCheck"
       />
     </n-space>
   </n-modal>
@@ -103,7 +104,10 @@ const handleCheck = (keys: Array<string | number>) => {
 const rowProps = (row: Firmware) => {
   return {
     style: 'cursor: pointer;',
-    onClick: () => {
+    onClick: (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      // 체크박스 클릭 시 중복 처리 방지
+      if (target.closest('.n-checkbox')) return
       const index = checkedRowKeys.value.indexOf(row.id)
       if (index === -1) {
         checkedRowKeys.value.push(row.id)
@@ -239,6 +243,19 @@ const bulkColumns = computed<DataTableColumns<Firmware>>(() => [
 }
 
 :deep(.n-select) {
-  color: #2080f0 !important;
+  color: var(--accent-color) !important;
+}
+
+:deep(.n-select .n-base-selection) {
+  --n-border: 1px solid var(--accent-color) !important;
+  --n-border-hover: 1px solid var(--accent-color) !important;
+  --n-border-focus: 1px solid var(--accent-color) !important;
+  --n-border-active: 1px solid var(--accent-color) !important;
+  --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
+  --n-box-shadow-active: 0 0 0 2px var(--accent-color-20) !important;
+  --n-caret-color: var(--accent-color) !important;
+  --n-arrow-color: var(--accent-color) !important;
+  --n-color: transparent !important;
+  --n-color-active: transparent !important;
 }
 </style>

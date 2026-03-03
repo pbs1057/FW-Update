@@ -7,7 +7,7 @@ export interface Firmware {
   systemId: string;
   md5: string;
   model: string;
-  buyer: number;
+  buyer: string;
   type: string;
   mode: string;
   regDate: string;

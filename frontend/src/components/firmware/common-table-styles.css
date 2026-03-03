@@ -20,38 +20,49 @@
 
 /* Pagination info 스타일 */
 :deep(.n-pagination-item) {
-  color: #fff!important;
-  border-color: #2080f0 !important;
+  border-color: var(--accent-color)!important;
   background-color: transparent !important;
 }
 
 
 :deep(.n-pagination-item--button:hover) {
-  background-color: rgba(32, 128, 240, 0.1) !important;
-  border-color: #2080f0 !important;
+  background-color: var(--accent-color-10) !important;
+  border-color: var(--accent-color) !important;
   
 }
 
 :deep(.n-pagination-item.n-pagination-item--active) {
-  border-color: #2080f0 !important;
-  color: #2080f0 !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
 }
 
 :deep(.n-pagination-item--button:not(.n-pagination-item--disabled):hover) {
-   color: #2080f0 !important;
-   border-color: #2080f0 !important;
+   color: var(--accent-color) !important;
+   border-color: var(--accent-color) !important;
 }
 
-/* N-Input 호버 스타일 */
-:deep(.n-input:hover .n-input__border),
-:deep(.n-input:hover .n-input__state-border) {
-  border-color: #2080f0 !important;
+/* N-Input 스타일 */
+:deep(.n-input) {
+  --n-border: 1px solid var(--accent-color) !important;
+  --n-border-hover: 1px solid var(--accent-color) !important;
+  --n-border-focus: 1px solid var(--accent-color) !important;
+  --n-border-disabled: 1px solid var(--accent-color) !important;
+  --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
+  --n-caret-color: var(--accent-color) !important;
+ 
+}
+:deep(.n-select .n-base-selection) {
+  --n-border: 1px solid var(--accent-color) !important;
+  --n-border-hover: 1px solid var(--accent-color) !important;
+  --n-border-focus: 1px solid var(--accent-color) !important;
+  --n-border-active: 1px solid var(--accent-color) !important;
+  --n-box-shadow-focus: 0 0 0 2px var(--accent-color-20) !important;
+  --n-box-shadow-active: 0 0 0 2px var(--accent-color-20) !important;
+  --n-caret-color: var(--accent-color) !important;
+  --n-arrow-color: var(--accent-color) !important;
+  --n-color: transparent !important;
+  --n-color-active: transparent !important;
 }
 
-:deep(.n-input.n-input--focus .n-input__border),
-:deep(.n-input.n-input--focus .n-input__state-border) {
-  border-color: #2080f0 !important;
-  box-shadow: 0 0 0 2px rgba(32, 128, 240, 0.2) !important;
-}
 
 

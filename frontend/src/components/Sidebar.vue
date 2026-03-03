@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 
 const emit = defineEmits(['menu-change'])
+const isDark = inject('isDark', ref(true))
 
 const activeKey = ref('firmware')
 const collapsed = ref(false)
@@ -13,11 +14,11 @@ const menuOptions = [
   },
   {
     label: 'VerRev',
-    key: 'verrev'
+    key: 'verRev'
   },
   {
     label: 'VerRevCnt',
-    key: 'verrevcnt'
+    key: 'verRevCnt'
   },
   {
     label: 'Buyer',
@@ -56,7 +57,7 @@ const handleMenuSelect = (key) => {
 </script>
 
 <template>
-  <div class="bg-gray-900 border-r border-gray-600">
+  <div class=" border-r border-gray-600">
     <n-menu 
       :value="activeKey"
       :options="menuOptions"
@@ -65,7 +66,7 @@ const handleMenuSelect = (key) => {
       :collapsed="collapsed"
       :collapsed-width="64"
       :collapsed-icon-size="22"
-      inverted
+      :inverted="isDark"
     />
 </div>
 </template>
@@ -77,13 +78,9 @@ const handleMenuSelect = (key) => {
   --n-item-color-active: rgba(79, 148, 245, 0.25) !important;
   --n-item-color-active-hover: rgba(79, 148, 245, 0.35) !important;
   --n-item-color-active-collapsed: rgba(79, 148, 245, 0.25) !important;
-
-
+  --n-item-text-color-hover: var(--accent-color)!important;
+  --n-item-text-color-active: var(--accent-color)!important;
+  --n-item-text-color-active-hover: var(--accent-color)!important;
 }
-
-/* 추가 스타일 for better visibility */
-
-
-
 
 </style>
