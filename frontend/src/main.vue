@@ -20,12 +20,15 @@ const authStore = useAuthStore()
 const currentPage = ref('firmware')
 const isDark = ref(localStorage.getItem('theme') !== 'light')
 const theme = computed(() => isDark.value ? darkTheme : lightTheme)
-provide('isDark', isDark)
 
+
+// 테마 변경 시 로컬 스토리지에 저장
 watchEffect(() => {
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
 })
 
+
+// 다크 모드일 때와 라이트 모드일 때의 CSS 변수 설정
 watchEffect(() => {
   const root = document.documentElement
   if (isDark.value) {

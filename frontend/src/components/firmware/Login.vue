@@ -1,9 +1,6 @@
 <template>
-    
-    <div style="width: 500px; margin: 0 auto; padding: 0 16px;">
-     
+    <div class="w-[500px] px-4">
         <n-gradient-text type="info" :size="36">FW SERVER</n-gradient-text>
-
         <n-card>
             <template #header>
                 <n-gradient-text type="info" :size="24">Login</n-gradient-text>

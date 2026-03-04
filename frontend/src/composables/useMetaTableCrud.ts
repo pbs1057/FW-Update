@@ -24,8 +24,6 @@ export function useMetaTableCrud<T extends { id: number }>() {
 
   /**
    * 추가 버튼 클릭 핸들러
-   * @param items 현재 목록 (최대 ID 계산용)
-   * @param createDefault 다음 ID를 받아 신규 기본값을 반환하는 함수
    */
   const openAdd = (items: T[], createDefault: (nextId: number) => T) => {
     const maxId = items.reduce((max, item) => (item.id > max ? item.id : max), 0)

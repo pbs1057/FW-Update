@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 1000px; margin: 0 auto; padding: 0 16px;">
+  <div class="max-w-[1000px] mx-auto px-4">
     <n-space justify="space-between" align="center" style=" padding: 0 24px;">
       <n-gradient-text type="info" :size="24">Model</n-gradient-text>
       <n-space>

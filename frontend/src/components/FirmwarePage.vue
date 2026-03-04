@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 1400px; margin: 0 auto; padding: 0 16px;">
+  <div class="max-w-[1400px] mx-auto px-4">
     <n-space vertical :size="12">
       <n-space justify="space-between" style="width: 100%;">
         <n-space>
