@@ -48,7 +48,7 @@
         </n-form>
         <template #footer>
           <n-space justify="end">
-            <n-button type="info" ghost @click="handleSave">Modify</n-button>
+            <n-button type="info" ghost @click="onSave">Modify</n-button>
             <n-button @click="showModal = false">Cancel</n-button>
           </n-space>
         </template>
@@ -65,7 +65,7 @@ import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { VerRev } from '../../type/type'
 import CalendarEditIcon from '../../assets/CalendarEdit20Regular.svg?component'
 import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
-import { useConfirm } from '../../composables/useConfirm'
+import { useMetaOptions } from '../../composables/useMetaOptions'
 
 
 const metaStore = useFirmwareMetaStore()
@@ -74,22 +74,10 @@ const isDark = computed(() => osTheme.value === 'dark')
 const searchVersion = ref<string | null>(null)
 const searchRevision = ref<string | null>(null)
 
-const { showModal, selectedRow, rowProps } = useMetaTableCrud<VerRev>()
-const { confirm } = useConfirm()
+const { showModal, selectedRow, isEdit, rowProps, handleSave } = useMetaTableCrud<VerRev>()
+const { versionOptions, revisionOptions } = useMetaOptions()
 
 const data = computed(() => metaStore.getVerRevs())
-
-// Version 옵션 (중복 제거)
-const versionOptions = computed(() => {
-  const versions = Array.from(new Set(data.value.map(d => d.version)))
-  return versions.map(v => ({ label: v, value: v }))
-})
-
-// Revision 옵션 (중복 제거)
-const revisionOptions = computed(() => {
-  const revisions = Array.from(new Set(data.value.map(d => d.revision)))
-  return revisions.map(r => ({ label: r, value: r }))
-})
 
 // 필터링된 데이터
 const filteredData = computed(() => {
@@ -108,27 +96,10 @@ const filteredData = computed(() => {
 
 const pagination = ref({ pageSize: 10 })
 
-const handleSave = async () => {
-  if (!selectedRow.value) return
-  showModal.value = false
-  const ok = await confirm('Do you want to update release note?')
-  if (!ok) {
-    showModal.value = true
-    return
-  }
-  metaStore.updateVerRev(selectedRow.value.id, selectedRow.value)
-}
-
-const handleSearch = () => {
-  // 검색 버튼 클릭 시 computed에서 자동으로 필터링됨
-  pagination.value = { pageSize: 10 }
-}
-
-const handleClear = () => {
-  searchVersion.value = null
-  searchRevision.value = null
-  pagination.value = { pageSize: 10 }
-}
+const onSave = () =>
+  handleSave(
+    (id, d) => metaStore.updateVerRev(id, d),
+  )
 
 const columns = computed<DataTableColumns<VerRev>>(() => [
   {

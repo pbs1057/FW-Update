@@ -32,12 +32,24 @@ export function useMetaOptions() {
     metaStore.getBuyers().map(b => ({ label: b.name, value: b.name }))
   )
 
+  const versionOptions = computed(() => {
+    const versions = Array.from(new Set(metaStore.getVerRevs().map(d => d.version)))
+    return versions.map(v => ({ label: v, value: v }))
+  })
+
+  const revisionOptions = computed(() => {
+    const revisions = Array.from(new Set(metaStore.getVerRevs().map(d => d.revision)))
+    return revisions.map(r => ({ label: r, value: r }))
+  })
+
   return {
     priorityOptions,
     typeOptions,
     modeOptions,
     encryptLevelOptions,
     modelOptions,
-    buyerOptions
+    buyerOptions,
+    versionOptions,
+    revisionOptions
   }
 }
