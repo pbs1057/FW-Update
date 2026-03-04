@@ -29,7 +29,7 @@
             <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
               Value (Hex)
             </n-tag>
-            <n-input v-model:value="selectedRow.value" placeholder="e.g., 0x01" />
+            <n-input v-model:value="selectedRow.value" placeholder="" />
           </n-input-group>
         </n-form-item>
         <n-form-item :show-feedback="false">
@@ -37,7 +37,7 @@
             <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
               Name
             </n-tag>
-            <n-input v-model:value="selectedRow.name" />
+            <n-input v-model:value="selectedRow.name" placeholder=""/>
           </n-input-group>
         </n-form-item>
         <n-form-item :show-feedback="false">
@@ -45,7 +45,11 @@
             <n-tag type="info" style="height: 90px;width: 150px; display: flex; align-items: center; justify-content: center;">
               Description
             </n-tag>
-            <n-input v-model:value="selectedRow.descr" type="textarea" :rows="3" />
+            <n-input v-model:value="selectedRow.descr" placeholder="" type="textarea" 
+                :autosize="{
+                  minRows: 3,
+                  maxRows: 5,
+                }" />
           </n-input-group>
         </n-form-item>
       </n-form>
@@ -71,9 +75,9 @@ import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
 const metaStore = useFirmwareMetaStore()
 
 const columns: DataTableColumns<EncryptLv> = [
-  { title: 'ID', width: 200, align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
+  { title: 'ID', width: 100, align: 'center', key: 'id', sorter: (a, b) => a.id - b.id },
   { title: 'Value (Hex)', align: 'center', key: 'value' },
-  { title: 'Name', align: 'center', key: 'name' },
+  { title: 'Name', width: 100,align: 'center', key: 'name' },
   { title: 'Description', width: 400, align: 'center', key: 'descr', ellipsis: { tooltip: true } }
 ]
 

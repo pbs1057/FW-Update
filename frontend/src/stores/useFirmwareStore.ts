@@ -49,7 +49,7 @@ const generateFirmwareData = (): Firmware[] => {
       id: `${String(i + 1)}`,
       version: randomElement(versions),
       revision: `r${random(27000, 35000)}`,
-      size: `${sizeInMB}.${random(10, 99)} MB`,
+      size: sizeInMB + random(10, 99) / 100,
       systemId: `${random(42000000, 42999999)}`,
       md5: generateMd5(),
       model: randomElement(models),

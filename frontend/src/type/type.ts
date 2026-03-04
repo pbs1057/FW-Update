@@ -3,7 +3,7 @@ export interface Firmware {
   id: string;
   version: string;
   revision: string;
-  size: string;
+  size: number;
   systemId: string;
   md5: string;
   model: string;

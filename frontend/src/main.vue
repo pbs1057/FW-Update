@@ -11,13 +11,20 @@ import BuildModeTable from './components/firmware/BuildModeTable.vue'
 import PriorityTable from './components/firmware/PriorityTable.vue'
 import PlatformKeyTable from './components/firmware/PlatformKeyTable.vue'
 import EncryptLvTable from './components/firmware/EncryptLvTable.vue'
+import Login from './components/firmware/Login.vue'
 import { NConfigProvider, NMessageProvider, NDialogProvider, NGlobalStyle, NButton, NIcon, darkTheme, lightTheme } from 'naive-ui'
 import { computed, provide, watchEffect } from 'vue'
+import { useAuthStore } from './stores/useAuthStore'
 
+const authStore = useAuthStore()
 const currentPage = ref('firmware')
-const isDark = ref(true)
+const isDark = ref(localStorage.getItem('theme') !== 'light')
 const theme = computed(() => isDark.value ? darkTheme : lightTheme)
 provide('isDark', isDark)
+
+watchEffect(() => {
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+})
 
 watchEffect(() => {
   const root = document.documentElement
@@ -52,7 +59,13 @@ const toggleTheme = () => {
     <n-global-style />
     <n-message-provider>
       <n-dialog-provider>
-      <div class="flex flex-col h-screen font-poppins">
+      <!-- 로그인 페이지 -->
+      <div v-if="!authStore.isLoggedIn" class="flex items-center justify-center h-screen">
+        <Login />
+      </div>
+
+      <!-- 메인 앱 레이아웃 -->
+      <div v-else class="flex flex-col h-screen font-poppins">
         <!-- 상단 헤더 -->
         <div class="px-20 pt-6 pb-4 flex items-center border-b border-gray-600">
           <h1 class="text-2xl font-bold">FW Update</h1>
@@ -62,10 +75,14 @@ const toggleTheme = () => {
             <span class="font-medium" style="opacity: 1;">{{ currentPage.charAt(0).toUpperCase() + currentPage.slice(1) }}</span>
           </nav>
           <!-- 테마 토글 버튼 -->
-          <div class="ml-auto">
+          <div class="ml-auto ">
             <n-button type="info" ghost @click="toggleTheme">
               {{ isDark ? 'Dark' : 'Light' }}
-            </n-button>
+            </n-button >
+            
+          </div>
+          <div class="ml-2">
+          <n-button type="info" ghost @click="authStore.logout()">Logout</n-button>
           </div>
         </div>
 
@@ -91,6 +108,7 @@ const toggleTheme = () => {
           </div>
         </div>
       </div>
+      <!-- /메인 앱 레이아웃 -->
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>

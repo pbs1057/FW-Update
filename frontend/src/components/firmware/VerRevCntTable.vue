@@ -9,9 +9,7 @@
       </n-space>
     </n-space>
     <n-card style=" background-color: transparent;" :bordered="false">
-      <template #header-extra>
-        <n-button size="small" @click="handleRefresh">새로고침</n-button>
-      </template>
+
       <n-data-table 
         :columns="columns" 
         :data="filteredData" 
@@ -30,10 +28,11 @@ import { NGradientText } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
 import type { VerRevCnt } from '../../type/type'
+import { useMetaOptions } from '../../composables/useMetaOptions'
 
 const metaStore = useFirmwareMetaStore()
 
-
+const { modelOptions } = useMetaOptions()
 
 const data = computed(() => metaStore.getVerRevCnts())
 const pagination = ref({ pageSize: 10 })
@@ -55,10 +54,7 @@ const handleClear = () => {
   searchModel.value = null
   pagination.value = { pageSize: 10 }
 }
-const modelOptions = computed(() => {
-  const models = Array.from(new Set(data.value.map(d => d.model)))
-  return models.map(m => ({ label: m, value: m }))
-})
+
 
 const columns: DataTableColumns<VerRevCnt> = [
   { title: 'Version',width: 300, align: 'center', key: 'version', sorter: (a, b) => a.version.localeCompare(b.version) },

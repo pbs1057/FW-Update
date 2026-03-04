@@ -47,7 +47,8 @@ const menuOptions = [
   {
     label: 'EncryptLv',
     key: 'encryptlv'
-  }
+  },
+
 ]
 
 const handleMenuSelect = (key) => {

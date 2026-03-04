@@ -46,9 +46,9 @@
           <n-gi>
             <n-input-group>
               <n-tag type="info"
-                style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Size
+                style="height: 34px; width: 100px; display: flex; align-items: center; justify-content: center;">Size
                 (Byte)</n-tag>
-              <n-input v-model:value="selectedRow.size" :disabled="true" />
+              <n-input-number :show-button="false" :value="selectedRow.size * 1000 * 1000" :disabled="true" />
             </n-input-group>
           </n-gi>
 
@@ -170,9 +170,13 @@
           <n-gi>
             <n-input-group>
               <n-tag type="info"
-                style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">Pin
+                style="height: 34px; width: 195px; display: flex; align-items: center; justify-content: center;">Pin
                 Code</n-tag>
-              <n-input v-model:value="selectedRow.pinCode" :disabled="true" />
+              <n-input :disabled="true" placeholder=""/>
+              <!-- selectedRow.pinCode-->
+              <n-button :render-icon="renderIcon" type="info" ghost>
+              </n-button>
+
             </n-input-group>
           </n-gi>
 
@@ -182,6 +186,7 @@
               <n-tag type="info"
                 style="height: 34px; width: 150px; display: flex; align-items: center; justify-content: center;">RegDate</n-tag>
               <n-input v-model:value="selectedRow.regDate" disabled />
+
             </n-input-group>
           </n-gi>
 
@@ -234,6 +239,9 @@ import { NModal, NSpace, NForm, NInput, NInputNumber, NInputGroup, NSelect, NSwi
 import type { Firmware } from '../../type/type'
 import { useFirmwareRowStyle } from '../../composables/useFirmwareRowStyle'
 import { useConfirm } from '../../composables/useConfirm'
+import { NIcon } from 'naive-ui'
+import { h } from 'vue'
+import { Refresh } from '@vicons/ionicons5'
 
 interface Props {
   show: boolean
@@ -288,6 +296,12 @@ const handleDelete = async () => {
     return
   }
   emit('delete', selectedRow.value.id)
+}
+
+function renderIcon() {
+  return h(NIcon, null, {
+    default: () => h(Refresh)
+  })
 }
 </script>
 

@@ -6,9 +6,7 @@
           <n-tag>Use</n-tag>
           <n-tag type="error">NoUse</n-tag>
           <n-tag type="info">Test</n-tag>
-          <div class ="textColor: 'rgba(249, 127, 188, 0.831)'"></div>
-          <n-tag ghost
-            :color="{ textColor: 'rgba(249, 127, 188, 0.831)', borderColor: 'rgba(249, 127, 188, 0.831)' }">NoUse
+          <n-tag ghost :color="{ textColor: 'rgba(249, 127, 188, 0.831)', borderColor: 'rgba(249, 127, 188, 0.831)' }">NoUse
             & Test</n-tag>
           <n-tag type="success">Pin</n-tag>
         </n-space>
@@ -74,7 +72,7 @@ import { useMetaOptions } from '../composables/useMetaOptions'
 const firmwareStore = useFirmwareStore()
 const metaStore = useFirmwareMetaStore()
 
-// 펌웨어 CRUD (상세 모달 열기/저장/삭제/벌크 처리)
+// 펌웨어 CRUD (상세 모달 열기/저장/삭제, 벌크 수정/삭제)
 const {
   showModal,
   selectedRow,
@@ -153,10 +151,9 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
     title: 'Size',
     key: 'size',
     sorter: (row1, row2) => {
-      const size1 = parseFloat(row1.size)
-      const size2 = parseFloat(row2.size)
-      return size1 - size2
-    }
+      return row1.size - row2.size
+    },
+    render: (row) => `${row.size } MB`
   },
   {
     title: 'Model',
@@ -165,7 +162,7 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
     filterOptions: modelOptions.value,
     filter(value, row) {
       return row.model === value
-    }
+    },
   },
   {
     title: 'Buyer',
@@ -200,12 +197,13 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
 <style scoped>
 :deep(.n-data-table) {
   border-color: var(--accent-color) !important;
-  background-color: transparent !important;
+  
 }
 
 :deep(.n-data-table-wrapper) {
   background-color: transparent !important;
 }
+
 
 
 /* Pin use - 초록색 */
@@ -219,7 +217,7 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
 
 /* No use & Test - 핑크색 */
 :deep(.row-no-use-test td) {
-  background-color: rgba(249, 127, 188, 0.831) !important;
+  background-color: rgba(249, 127, 188, 0.5) !important;
 }
 
 :deep(.row-no-use-test:hover td) {
@@ -250,13 +248,11 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
   background-color: transparent !important;
 }
 
-:deep(.n-pagination-item--button:hover) {
-  background-color: var(--accent-color-10) !important;
+:deep(.n-pagination-item--active) {
   border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
 }
-
-:deep(.n-pagination-item.n-pagination-item--active) {
-  border-color: var(--accent-color) !important;
+:deep(.n-pagination-item:focus) {
   color: var(--accent-color) !important;
 }
 

@@ -30,7 +30,7 @@
             <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
               Name
             </n-tag>
-            <n-input v-model:value="selectedRow.name" />
+            <n-input v-model:value="selectedRow.name" placeholder=""/>
           </n-input-group>
         </n-form-item>
         <n-form-item :show-feedback="false">
@@ -38,7 +38,7 @@
             <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
               File String
             </n-tag>
-            <n-input v-model:value="selectedRow.fileString" />
+            <n-input v-model:value="selectedRow.fileString" placeholder=""/>
           </n-input-group>
         </n-form-item>
       </n-form>

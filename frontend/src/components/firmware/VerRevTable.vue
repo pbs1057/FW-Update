@@ -38,7 +38,11 @@
                 style="height: 125px; width: 150px; display: flex; align-items: center; justify-content: center;">
                 Note
               </n-tag>
-              <n-input v-model:value="selectedRow.note" type="textarea" :rows="5" />
+              <n-input v-model:value="selectedRow.note" placeholder="Autosizable" type="textarea" size="small"
+                :autosize="{
+                  minRows: 3,
+                  maxRows: 5,
+                }" />
             </n-input-group>
           </n-form-item>
         </n-form>
@@ -148,7 +152,7 @@ const columns = computed<DataTableColumns<VerRev>>(() => [
     width: 300,
     render: (row) => {
       if (row.note && row.note.trim()) {
-        return h(NIcon, { size: 20, color: '--select-menu-text' , style: { cursor: 'pointer', verticalAlign: 'middle' } }, {
+        return h(NIcon, { size: 20, color: '--select-menu-text', style: { cursor: 'pointer', verticalAlign: 'middle' } }, {
           default: () => h(CalendarEditIcon)
         })
       }
