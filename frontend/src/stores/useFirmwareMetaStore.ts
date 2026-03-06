@@ -14,11 +14,11 @@ const generateVerRevData = (): VerRev[] => {
   
   versions.forEach((version, idx) => {
     for (let i = 0; i < random(3, 8); i++) {
-      const revNum = 27000 + idx * 1000 + i * 100
+      const revNum = ['r27000', 'r27500', 'r28000', 'r28500', 'r29000', 'r29500', 'r30000', 'r30500', 'r31000', 'r31500'][random(0, 9)]
       data.push({
         id: idCounter++,
         version,
-        revision: `r${revNum}`,
+        revision: revNum,
         note: `Release notes for ${version} revision ${revNum}`
       })
     }
@@ -35,11 +35,11 @@ const generateVerRevCntData = (): VerRevCnt[] => {
   
   versions.forEach((version, idx) => {
     for (let i = 0; i < random(2, 5); i++) {
-      const revNum = 27000 + idx * 1000 + i * 100
+      const revNum = ['r27000', 'r27500', 'r28000', 'r28500', 'r29000', 'r29500', 'r30000', 'r30500', 'r31000', 'r31500'][random(0, 9)]
       data.push({
         id: idCounter++,
         version,
-        revision: `r${revNum}`,
+        revision: revNum,
         count: random(1, 500),
         model: `Model ${String.fromCharCode(65 + random(0, 7))}`
       })

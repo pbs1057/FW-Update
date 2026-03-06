@@ -7,10 +7,10 @@
             </template>
             <n-form>
                 <n-form-item label="아이디">
-                    <n-input v-model:value="username" placeholder=""/>
+                    <n-input v-model:value="username" placeholder="" />
                 </n-form-item>
-                <n-form-item label="비밀번호" >
-                    <n-input v-model:value="password" type="password" placeholder=""/>
+                <n-form-item label="비밀번호">
+                    <n-input v-model:value="password" type="password" placeholder="" />
                 </n-form-item>
             </n-form>
             <template #footer>
@@ -45,7 +45,7 @@ const handleReset = () => {
     username.value = ''
     password.value = ''
 }
- 
+
 </script>
 
 <style scoped src="./common-table-styles.css"></style>

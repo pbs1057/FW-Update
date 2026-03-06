@@ -1,9 +1,8 @@
-import { ref } from 'vue'
-import { nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted  } from 'vue'
 import type { DataTableInst } from 'naive-ui'
-import Sortable from 'sortablejs'
 import type { Firmware } from '../type/type'
 import { useFirmwareStore } from '../stores/useFirmwareStore'
+import Sortable from 'sortablejs'
 
 /**
  * 펌웨어 테이블 드래그앤드롭 정렬 컴포저블

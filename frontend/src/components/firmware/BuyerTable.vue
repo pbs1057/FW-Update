@@ -1,62 +1,52 @@
 <template>
   <div class="max-w-[1000px] mx-auto px-4">
-    <n-space justify="space-between" align="center" style=" padding: 0 24px;">
+    <n-space justify="space-between" style=" padding: 0 24px;">
       <n-gradient-text type="info" :size="24">Buyer</n-gradient-text>
       <n-space>
         <n-button @click="handleAdd" type="info" ghost>Add Buyer</n-button>
       </n-space>
     </n-space>
-  <n-card style=" background-color: transparent;" :bordered="false">
-    <template #header-extra>
-      <n-space>
-        <n-button size="small" @click="handleAdd">추가</n-button>
-        <n-button size="small" @click="handleRefresh">새로고침</n-button>
-      </n-space>
-    </template>
-    <n-data-table
-      :columns="columns"
-      :data="data"
-      :pagination="pagination"
-      :row-props="rowProps"
-      :row-key="(row: Buyer) => row.id"
-      max-height="65vh"
-      :scroll-x="800"
-    />
-    
-    <n-modal v-model:show="showModal" preset="card" style="width: 500px;" :header-style="{ paddingBottom: '8px' }">
-      <template #header>
-        <n-gradient-text type="info">
-          {{ isEdit ? `Modify Buyer info (ID : ${selectedRow?.id})` : 'Add Buyer info' }}
-        </n-gradient-text>
-      </template>
-      <n-form v-if="selectedRow">
-        <n-form-item :show-feedback="false">
-          <n-input-group>
-            <n-tag type="info" style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
-              Name
-            </n-tag>
-            <n-input v-model:value="selectedRow.name" placeholder=""/>
-          </n-input-group>
-        </n-form-item>
-      </n-form>
-      <template #footer>
-        <n-space justify="end">
-          <n-button type="info" ghost @click="onSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
-          <n-button @click="showModal = false">Cancel</n-button>
-        </n-space>
-      </template>
-    </n-modal>
-  </n-card>
+    <n-card style=" background-color: transparent;" :bordered="false">
+      <n-data-table :columns="columns" :data="data" :pagination="{ pageSize: 10 }" :row-props="rowProps"
+        :row-key="(row: Buyer) => row.id" :scroll-x="800" />
+
+      <n-modal v-model:show="showModal" preset="card" style="width: 500px;" :header-style="{ paddingBottom: '8px' }">
+        <template #header>
+          <n-gradient-text type="info">
+            {{ isEdit ? `Modify Buyer info (ID : ${selectedRow?.id})` : 'Add Buyer info' }}
+          </n-gradient-text>
+        </template>
+        <n-form v-if="selectedRow">
+          <n-form-item :show-feedback="false">
+            <n-input-group>
+              <n-tag type="info"
+                style="height: 36px;width: 150px; display: flex; align-items: center; justify-content: center;">
+                Name
+              </n-tag>
+              <n-input v-model:value="selectedRow.name" placeholder="" />
+            </n-input-group>
+          </n-form-item>
+        </n-form>
+        <template #footer>
+          <n-space justify="end">
+            <n-button type="info" ghost @click="onSave">{{ isEdit ? 'Modify' : 'Add' }}</n-button>
+            <n-button @click="showModal = false">Cancel</n-button>
+          </n-space>
+        </template>
+      </n-modal>
+    </n-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { NGradientText } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+
 import { useFirmwareMetaStore } from '../../stores/useFirmwareMetaStore'
-import type { Buyer } from '../../type/type'
+
 import { useMetaTableCrud } from '../../composables/useMetaTableCrud'
+
+import { NGradientText , DataTableColumns } from 'naive-ui'
+import type { Buyer } from '../../type/type'
 
 const metaStore = useFirmwareMetaStore()
 
@@ -66,9 +56,8 @@ const columns: DataTableColumns<Buyer> = [
 ]
 
 const data = computed(() => metaStore.getBuyers())
-const pagination = ref({ pageSize: 10 })
 
-const { showModal, selectedRow, isEdit, rowProps, openAdd, handleSave, handleDelete } =
+const { showModal, selectedRow, isEdit, rowProps, openAdd, handleSave } =
   useMetaTableCrud<Buyer>()
 
 const handleAdd = () =>
@@ -79,10 +68,6 @@ const onSave = () =>
     (id, d) => metaStore.updateBuyer(id, d),
     (item) => metaStore.addBuyer(item)
   )
-
-const onDelete = () => handleDelete((id) => metaStore.deleteBuyer(id))
-
-const handleRefresh = () => metaStore.regenerateAllData()
 </script>
 
 <style scoped src="./common-table-styles.css"></style>

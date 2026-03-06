@@ -8,6 +8,7 @@ const randomElement = <T>(arr: T[]): T => arr[random(0, arr.length - 1)]
 const randomBoolean = () => Math.random() > 0.5
 
 const versions = ['v1.6.8', 'v1.6.9', 'v1.7.0', 'v1.7.1', 'v1.7.2', 'v1.8.0', 'v1.8.1', 'v2.0.0', 'v2.0.1', 'v2.1.0']
+const revisions = ['r27000', 'r27500', 'r28000', 'r28500', 'r29000', 'r29500', 'r30000', 'r30500', 'r31000', 'r31500']
 const models = ['Model A', 'Model B', 'Model C', 'Model D', 'Model E', 'Model F', 'Model G', 'Model H']
 const buyers = ['FOR', 'FALC', 'BLA', 'ICON', 'ZP', 'TEST', 'OEM', 'PARTNER']
 const types = ['FULL', 'RELEASE', 'PATCH', 'RECOVERY']
@@ -48,7 +49,7 @@ const generateFirmwareData = (): Firmware[] => {
       key: i,
       id: `${String(i + 1)}`,
       version: randomElement(versions),
-      revision: `r${random(27000, 35000)}`,
+      revision: randomElement(revisions),
       size: sizeInMB + random(10, 99) / 100,
       systemId: `${random(42000000, 42999999)}`,
       md5: generateMd5(),

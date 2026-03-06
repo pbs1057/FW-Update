@@ -52,13 +52,13 @@
     multiple
     accept=".bin,.hex,.fw"
     style="display: none"
-    @change="handleFileChange"
+    @change=""
   />
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue'
-import { NCheckbox, NGradientText } from 'naive-ui'
+import { ref } from 'vue'
+import { NGradientText } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 
 interface UploadFile {
@@ -112,48 +112,7 @@ const columns: DataTableColumns<UploadFile> = [
   }
 ]
 
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
-}
 
-const calculateMD5 = async (file: File): Promise<string> => {
-  // MD5 계산 (실제로는 crypto-js 같은 라이브러리 필요)
-  // 임시로 파일명 기반 해시 생성
-  return 'MD5_' + file.name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20)
-}
-
-const handleFileChange = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const files = target.files
-  
-  if (files && files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      const md5 = await calculateMD5(file)
-      
-      uploadedFiles.value.push({
-        id: `${Date.now()}_${i}`,
-        name: file.name,
-        size: formatFileSize(file.size),
-        md5: md5,
-        file: file
-      })
-    }
-  }
-  
-  // input 초기화
-  if (target) {
-    target.value = ''
-  }
-}
-
-const handleAddFirmware = () => {
-  fileInputRef.value?.click()
-}
 
 const handleCheck = (keys: string[]) => {
   checkedRowKeys.value = keys

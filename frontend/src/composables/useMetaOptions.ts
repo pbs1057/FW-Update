@@ -39,7 +39,9 @@ export function useMetaOptions() {
 
   const revisionOptions = computed(() => {
     const revisions = Array.from(new Set(metaStore.getVerRevs().map(d => d.revision)))
-    return revisions.map(r => ({ label: r, value: r }))
+    return revisions
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+      .map(r => ({ label: r, value: r }))
   })
 
   return {

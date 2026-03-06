@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+//Vue
+import { ref, computed, watchEffect } from 'vue'
+
+//components
 import Sidebar from './components/Sidebar.vue'
 import FirmwarePage from './components/FirmwarePage.vue'
 import VerRevTable from './components/firmware/VerRevTable.vue'
@@ -12,9 +15,13 @@ import PriorityTable from './components/firmware/PriorityTable.vue'
 import PlatformKeyTable from './components/firmware/PlatformKeyTable.vue'
 import EncryptLvTable from './components/firmware/EncryptLvTable.vue'
 import Login from './components/firmware/Login.vue'
-import { NConfigProvider, NMessageProvider, NDialogProvider, NGlobalStyle, NButton, NIcon, darkTheme, lightTheme } from 'naive-ui'
-import { computed, provide, watchEffect } from 'vue'
+
+// Stores
 import { useAuthStore } from './stores/useAuthStore'
+
+// Naive UI
+import { NConfigProvider, NMessageProvider, NDialogProvider, NGlobalStyle, NButton, darkTheme, lightTheme } from 'naive-ui'
+
 
 const authStore = useAuthStore()
 const currentPage = ref('firmware')
@@ -66,7 +73,6 @@ const toggleTheme = () => {
       <div v-if="!authStore.isLoggedIn" class="flex items-center justify-center h-screen">
         <Login />
       </div>
-
       <!-- 메인 앱 레이아웃 -->
       <div v-else class="flex flex-col h-screen font-poppins">
         <!-- 상단 헤더 -->
@@ -82,7 +88,6 @@ const toggleTheme = () => {
             <n-button type="info" ghost @click="toggleTheme">
               {{ isDark ? 'Dark' : 'Light' }}
             </n-button >
-            
           </div>
           <div class="ml-2">
           <n-button type="info" ghost @click="authStore.logout()">Logout</n-button>
@@ -111,7 +116,6 @@ const toggleTheme = () => {
           </div>
         </div>
       </div>
-      <!-- /메인 앱 레이아웃 -->
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>

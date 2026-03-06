@@ -1,11 +1,17 @@
 <script setup>
 import { ref, inject } from 'vue'
 
-const emit = defineEmits(['menu-change'])
+const emit = defineEmits(['menuChange'])
 const isDark = inject('isDark', ref(true))
 
 const activeKey = ref('firmware')
 const collapsed = ref(false)
+
+// 메뉴 선택 핸들러
+const handleMenuSelect = (key) => {
+  activeKey.value = key
+  emit('menuChange', key)
+}
 
 const menuOptions = [
   {
@@ -50,26 +56,13 @@ const menuOptions = [
   },
 
 ]
-
-const handleMenuSelect = (key) => {
-  activeKey.value = key
-  emit('menu-change', key)
-}
 </script>
 
 <template>
-  <div class=" border-r border-gray-600">
-    <n-menu 
-      :value="activeKey"
-      :options="menuOptions"
-      @update:value="handleMenuSelect"
-      :indent="24"
-      :collapsed="collapsed"
-      :collapsed-width="64"
-      :collapsed-icon-size="22"
-      :inverted="isDark"
-    />
-</div>
+  <div class="border-r border-gray-600">
+    <n-menu :value="activeKey" :options="menuOptions" @update:value="handleMenuSelect" :indent="24"
+      :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :inverted="isDark" />
+  </div>
 </template>
 
 <style scoped>
@@ -79,9 +72,8 @@ const handleMenuSelect = (key) => {
   --n-item-color-active: rgba(79, 148, 245, 0.25) !important;
   --n-item-color-active-hover: rgba(79, 148, 245, 0.35) !important;
   --n-item-color-active-collapsed: rgba(79, 148, 245, 0.25) !important;
-  --n-item-text-color-hover: var(--accent-color)!important;
-  --n-item-text-color-active: var(--accent-color)!important;
-  --n-item-text-color-active-hover: var(--accent-color)!important;
+  --n-item-text-color-hover: var(--accent-color) !important;
+  --n-item-text-color-active: var(--accent-color) !important;
+  --n-item-text-color-active-hover: var(--accent-color) !important;
 }
-
 </style>

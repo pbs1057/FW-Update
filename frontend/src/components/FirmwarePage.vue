@@ -6,8 +6,7 @@
           <n-tag>Use</n-tag>
           <n-tag type="error">NoUse</n-tag>
           <n-tag type="info">Test</n-tag>
-          <n-tag ghost :color="{ textColor: 'rgba(249, 127, 188, 0.831)', borderColor: 'rgba(249, 127, 188, 0.831)' }">NoUse
-            & Test</n-tag>
+          <n-tag ghost :color="{ textColor: 'rgba(249, 127, 188, 0.831)', borderColor: 'rgba(249, 127, 188, 0.831)' }">NoUse & Test</n-tag>
           <n-tag type="success">Pin</n-tag>
         </n-space>
         <n-space>
@@ -16,26 +15,25 @@
         </n-space>
       </n-space>
 
+      <!-- 펌웨어 데이터 테이블 -->
       <n-data-table 
-      ref="dataTableInst" 
-      :columns="columns" 
-      :data="data" 
-      :pagination="{ showSizePicker: true, pageSizes: [10, 20, 50, 200] }"
-      :row-props="rowProps" max-height="65vh" :scroll-x="1200" />
+        ref="dataTableInst" 
+        :columns="columns" 
+        :data="data" 
+        :pagination="{ showSizePicker: true, pageSizes: [10, 20, 50, 200] }"
+        :row-props="rowProps" max-height="65vh" :scroll-x="1200" />
 
       <!-- 업로드 모달 -->
       <UploadFirmwareModal 
-      v-model:show="showUploadModal" 
-      @upload="handleUpload" />
+        v-model:show="showUploadModal" 
+        @upload="handleUpload" />
 
       <!-- 벌크 수정 모달 -->
       <BulkModifyModal 
-      v-model:show="showBulkModal" 
-      :data="data" 
-      :priority-options="priorityOptions"
-      :model-options="modelOptions" 
-      @bulk-update="handleBulkUpdate" 
-      @bulk-delete="handleBulkDelete" />
+        v-model:show="showBulkModal" 
+        :data="data" 
+        @bulk-update="handleBulkUpdate" 
+        @bulk-delete="handleBulkDelete"/>
 
       <!-- 상세 정보 모달 -->
       <FirmwareDetailModal  
@@ -48,29 +46,40 @@
         :type-options="typeOptions"
         :mode-options="modeOptions"
         @save="saveChanges"
-        @delete="deleteFirmware"
-      />
+        @delete="deleteFirmware"/>
     </n-space>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { DataTableColumns } from 'naive-ui'
+// ── Vue Core 
 import { ref, computed } from 'vue'
+
+// ── Naive UI
+import type { DataTableColumns } from 'naive-ui'
 import { NButton, NSpace } from 'naive-ui'
-import { useFirmwareStore } from '../stores/useFirmwareStore'
-import { useFirmwareMetaStore } from '../stores/useFirmwareMetaStore'
+
+// ── Types 
 import type { Firmware } from '../type/type'
-import BulkModifyModal from './modals/BulkModifyModal.vue'
-import UploadFirmwareModal from './modals/UploadFirmwareModal.vue'
-import FirmwareDetailModal from './modals/FirmwareDetailModal.vue'
+
+// ── Stores 
+import { useFirmwareStore } from '../stores/useFirmwareStore'
+
+// ── Composables
 import { useFirmwareCrud } from '../composables/useFirmwareCrud'
 import { useFirmwareRowStyle } from '../composables/useFirmwareRowStyle'
 import { useFirmwareSortable } from '../composables/useFirmwareSortable'
 import { useMetaOptions } from '../composables/useMetaOptions'
 
+// ── Components
+import BulkModifyModal from './modals/BulkModifyModal.vue'
+import UploadFirmwareModal from './modals/UploadFirmwareModal.vue'
+import FirmwareDetailModal from './modals/FirmwareDetailModal.vue'
+
 const firmwareStore = useFirmwareStore()
-const metaStore = useFirmwareMetaStore()
+
+// 펌웨어 데이터
+const data = computed(() => firmwareStore.getFirmwares())
 
 // 펌웨어 CRUD (상세 모달 열기/저장/삭제, 벌크 수정/삭제)
 const {
@@ -80,14 +89,18 @@ const {
   saveChanges,
   deleteFirmware,
   handleBulkUpdate,
-  handleBulkDelete
-} = useFirmwareCrud()
-
-// 행 스타일 (상태별 클래스, switch 스타일)
-const { getFirmwareRowProps } = useFirmwareRowStyle()
+  handleBulkDelete } = useFirmwareCrud()
 
 // 메타 스토어 셀렉트 옵션
-const { priorityOptions, typeOptions, modeOptions, encryptLevelOptions, modelOptions, buyerOptions } = useMetaOptions()
+const { 
+  priorityOptions, 
+  typeOptions, 
+  modeOptions, 
+  encryptLevelOptions, 
+  modelOptions, 
+  buyerOptions, 
+  versionOptions, 
+  revisionOptions } = useMetaOptions()
 
 // 벌크/업로드 모달
 const showBulkModal = ref(false)
@@ -101,24 +114,14 @@ const handleUpload = (files: File[]) => {
   // TODO: 실제 업로드 로직 구현
 }
 
+// 행 스타일 (상태별 클래스, switch 스타일)
+const { getFirmwareRowProps } = useFirmwareRowStyle()
+
 // rowProps: 상태별 클래스 + 클릭 핸들러
 const rowProps = (row: Firmware) => getFirmwareRowProps(row, handleRowClick)
 
-// 펌웨어 데이터
-const data = computed(() => firmwareStore.getFirmwares())
-
 // 드래그앤드롭 정렬
 const { dataTableInst } = useFirmwareSortable(() => data.value)
-
-// Version / Revision 필터 옵션 (중복 제거)
-const versionOptions = computed(() => {
-  const versions = Array.from(new Set(data.value.map(d => d.version)))
-  return versions.map(v => ({ label: v, value: v }))
-})
-
-const revisionOptions = computed(() =>
-  metaStore.getReleaseTypes().map(r => ({ label: r.name, value: r.name }))
-)
 
 //ID  Version  Revision  Size  Model  Buyer  Type  Priority  Download
 const columns = computed<DataTableColumns<Firmware>>(() => [
@@ -180,10 +183,6 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
     title: 'Priority',
     key: 'priority',
     sorter: (row1, row2) => row1.priority.localeCompare(row2.priority),
-    filterOptions: priorityOptions.value,
-    filter(value, row) {
-      return row.priority === value
-    }
   },
   {
     title: 'Download',
@@ -195,17 +194,6 @@ const columns = computed<DataTableColumns<Firmware>>(() => [
 </script>
 
 <style scoped>
-:deep(.n-data-table) {
-  border-color: var(--accent-color) !important;
-  
-}
-
-:deep(.n-data-table-wrapper) {
-  background-color: transparent !important;
-}
-
-
-
 /* Pin use - 초록색 */
 :deep(.row-pin td) {
   background-color: rgba(90, 210, 105, 0.5) !important;
